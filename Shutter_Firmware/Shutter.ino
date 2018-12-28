@@ -42,7 +42,7 @@
 
 #include <AccelStepper.h>
 #include <EEPROM.h>
-#include "PDMShutterClass.h"
+#include "ShutterClass.h"
 
 #define Computer Serial
 String serialBuffer;
