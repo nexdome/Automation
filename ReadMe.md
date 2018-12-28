@@ -6,7 +6,7 @@
 Lots of bugs squashed and Shutter mostly working but buttons are reported backwards even though I thought I got one pin wrong so only one button would work. Sleep is not implemented for the shutter though I found out the total power consumed for idle mode would be about 85mA. The battery is 9AH so 50% drawdawn means 4.5AH or 4500mAH. 4500/85 = 52 hours if not actually moving the shutter. Of course at that low draw the battery delivers more than 9AH so you'd actually get more like 60 hours.
 
 ## Second release April 23, 2018 ##
-Now contains all three pieces of software but is in no way compatible with any official NexDome software, firmware or ASCOM driver. 
+Now contains all three pieces of software but is in no way compatible with any official NexDome software, firmware or ASCOM driver.
 
 ## First release March 18. 2018 ##
 The aim of this project is to provide three pieces of software that are required to operate a NexDome personal observatory under the ASCOM Platform and will consist of:
@@ -16,7 +16,7 @@ The aim of this project is to provide three pieces of software that are required
 - PDM Dome ASCOM driver for Rotator and Shutter in C#
 
 ## Prerequisites ##
-Rotator and Shutter - Either Arduino IDE or Visual Studio with Visual Micro's Arduino add-on. 
+Rotator and Shutter - Either Arduino IDE or Visual Studio with Visual Micro's Arduino add-on.
 (http://www.visualmicro.com/page/Arduino-Visual-Studio-Downloads.aspx).
 
 PDM Dome - Visual Studio 2015+ with C#
