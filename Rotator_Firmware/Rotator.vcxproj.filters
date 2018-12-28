@@ -15,17 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PDMRotator.ino" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="__vm\.PDMRotator.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RemoteShutterClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RotatorClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <None Include="Rotator.ino" />
   </ItemGroup>
 </Project>
