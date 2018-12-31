@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASCOM.PDM {
+namespace ASCOM.NexDome {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace ASCOM.PDM {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class GlobalStrings {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal GlobalStrings() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -39,13 +39,13 @@ namespace ASCOM.PDM {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASCOM.PDM.GlobalStrings", typeof(GlobalStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASCOM.NexDome.GlobalStrings", typeof(GlobalStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace ASCOM.PDM {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Acceleration.
         /// </summary>
@@ -68,7 +68,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("AccelerationText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to At Home.
         /// </summary>
@@ -77,7 +77,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("AtHomeText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to At Park.
         /// </summary>
@@ -86,7 +86,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("AtParkText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
@@ -95,7 +95,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CancelText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can Find Home.
         /// </summary>
@@ -104,7 +104,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CanFindHomeText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can Park.
         /// </summary>
@@ -113,7 +113,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CanParkText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can Set Altitude.
         /// </summary>
@@ -122,7 +122,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CanSetAltitudeText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can Set Azimuth.
         /// </summary>
@@ -131,7 +131,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CanSetAzimuthText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can Set Park.
         /// </summary>
@@ -140,7 +140,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CanSetParkText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can Set Shutter.
         /// </summary>
@@ -149,7 +149,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CanSetShutterText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Can Sync Azimuth.
         /// </summary>
@@ -158,7 +158,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CanSyncAzimuthText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Capabilities.
         /// </summary>
@@ -167,7 +167,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CapabilitiesText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
@@ -176,7 +176,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CloseFormText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
@@ -185,7 +185,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CloseShutterText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
@@ -194,7 +194,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CloseText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CutOff.
         /// </summary>
@@ -203,7 +203,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("CutOffText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Calibrate.
         /// </summary>
@@ -212,7 +212,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("DoCalibrateText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to NexDome Driver version.
         /// </summary>
@@ -221,7 +221,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("DriverVersionText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
@@ -230,7 +230,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ErrorText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Full Turn.
         /// </summary>
@@ -239,7 +239,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("FullTurnText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
@@ -248,7 +248,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("GoHomeText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Park.
         /// </summary>
@@ -257,7 +257,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("GoParkText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Goto Az.
         /// </summary>
@@ -266,7 +266,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("GoToAzText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Goto Pos.
         /// </summary>
@@ -275,7 +275,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("GoToPosText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Has Homed.
         /// </summary>
@@ -284,7 +284,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("HasHomedText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Home and Park.
         /// </summary>
@@ -293,7 +293,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("HomeAndParkText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Home Status.
         /// </summary>
@@ -302,7 +302,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("HomeStatusText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
@@ -311,7 +311,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("HomeText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid number.
         /// </summary>
@@ -320,7 +320,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("InvalidNumberText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Low.
         /// </summary>
@@ -329,7 +329,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("LowText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Max Speed.
         /// </summary>
@@ -338,7 +338,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("MaxSpeedText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Motor Settings.
         /// </summary>
@@ -347,7 +347,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("MotorSettingsText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Movement.
         /// </summary>
@@ -356,7 +356,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("MovementText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Never Homed.
         /// </summary>
@@ -365,7 +365,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("NeverHomedText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
@@ -374,7 +374,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("OpenShutterText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Park.
         /// </summary>
@@ -383,7 +383,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ParkText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rain Settings.
         /// </summary>
@@ -392,7 +392,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("RainBoxTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Interval.
         /// </summary>
@@ -401,7 +401,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("RainIntervalText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Require twice.
         /// </summary>
@@ -410,7 +410,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("RainRequireTwiceText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not raining.
         /// </summary>
@@ -419,7 +419,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("RainStateNotRainingText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RAINING.
         /// </summary>
@@ -428,7 +428,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("RainStateRainingText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reversed.
         /// </summary>
@@ -437,7 +437,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ReversedText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rotator.
         /// </summary>
@@ -446,7 +446,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("RotatorText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rotator version.
         /// </summary>
@@ -455,7 +455,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("RotatorVersionText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
@@ -464,7 +464,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SaveText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Finding Home.
         /// </summary>
@@ -473,7 +473,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SeekHomeText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Measuring Dome.
         /// </summary>
@@ -482,7 +482,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SeekMeasuring", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Seek Mode.
         /// </summary>
@@ -491,7 +491,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SeekModeText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Move off Home.
         /// </summary>
@@ -500,7 +500,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SeekMoveOff", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
@@ -509,7 +509,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SeekNoneText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Set.
         /// </summary>
@@ -518,7 +518,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SetText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
@@ -527,7 +527,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SettingsText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Closed.
         /// </summary>
@@ -536,7 +536,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ShutterClosedText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Close when low.
         /// </summary>
@@ -545,7 +545,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ShutterCloseLowText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Closing.
         /// </summary>
@@ -554,7 +554,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ShutterClosingText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Opening.
         /// </summary>
@@ -563,7 +563,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ShutterOpeningText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
@@ -572,7 +572,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ShutterOpenText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Shutter.
         /// </summary>
@@ -581,7 +581,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ShutterText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
@@ -590,7 +590,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ShutterUnknownText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Shutter Version.
         /// </summary>
@@ -599,7 +599,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("ShutterVersionText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Steps Per.
         /// </summary>
@@ -608,7 +608,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("StepPerText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to STOP.
         /// </summary>
@@ -617,7 +617,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("StopText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Sync Az.
         /// </summary>
@@ -626,7 +626,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("SyncAzText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Version.
         /// </summary>
@@ -635,7 +635,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("VersionText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Voltages.
         /// </summary>
@@ -644,7 +644,7 @@ namespace ASCOM.PDM {
                 return ResourceManager.GetString("VoltagesBoxTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Voltage.
         /// </summary>

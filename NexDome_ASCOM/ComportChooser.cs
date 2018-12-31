@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using ASCOM.Utilities;
-using ASCOM.PDM;
+using ASCOM.NexDome;
 
-namespace ASCOM.PDM
+namespace ASCOM.NexDome
 {
     [ComVisible(false)]					// Form not registered for COM!
     public partial class ComportChooser : Form

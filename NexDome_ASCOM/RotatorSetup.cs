@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 
-namespace ASCOM.PDM
+namespace ASCOM.NexDome
 {
     public partial class RotatorSetup : Form
     {
@@ -43,7 +43,7 @@ namespace ASCOM.PDM
 
         private void InitUI()
         {
-            
+
             gbxVoltages.Text = GlobalStrings.VoltagesBoxTitle;
             btnSetCutoff.Text = GlobalStrings.SetText;
             lblVoltageTitle.Text = GlobalStrings.VoltageText;
@@ -289,7 +289,7 @@ namespace ASCOM.PDM
         private void btnFullTurn_Click(object sender, EventArgs e)
         {
             myDome.SendSerial(Dome.MOVE_RELATIVE_ROTATOR_CMD + (Dome.rotatorStepsPer - 1).ToString(Dome.sourceCulture));
-            
+
         }
         private void btnGoToPos_Click(object sender, EventArgs e)
         {

@@ -2,7 +2,7 @@
 // --------------------------------------------------------------------------------
 // TODO fill in this information for your driver, then remove this line!
 //
-// ASCOM Dome driver for PDM
+// ASCOM Dome driver for NexDome
 //
 // Description:	Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
 //				nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
@@ -18,6 +18,7 @@
 // Date			Who	Vers	Description
 // -----------	---	-----	-------------------------------------------------------
 // 06-05-2018	PDM	6.3.2	Initial edit, created from ASCOM driver template
+// 12-31-2018	PDM	6.3.3	Renaming PDM -> NexDome
 // --------------------------------------------------------------------------------
 //
 
@@ -44,21 +45,21 @@ using ASCOM.DeviceInterface;
 using System.Globalization;
 using System.Collections;
 
-namespace ASCOM.PDM
+namespace ASCOM.NexDome
 {
     //
-    // Your driver's DeviceID is ASCOM.PDM.Dome
+    // Your driver's DeviceID is ASCOM.NexDome.Dome
     //
-    // The Guid attribute sets the CLSID for ASCOM.PDM.Dome
+    // The Guid attribute sets the CLSID for ASCOM.NexDome.Dome
     // The ClassInterface/None addribute prevents an empty interface called
-    // _PDM from being created and used as the [default] interface
+    // _NexDome from being created and used as the [default] interface
     //
     // TODO Replace the not implemented exceptions with code to implement the function or
     // throw the appropriate ASCOM exception.
     //
 
     /// <summary>
-    /// PDM NexDome Driver
+    /// NexDome NexDome Driver
     /// </summary>
     [Guid("2e7b0c64-b9d3-41ab-9a59-9a991519c521")]
     [ClassInterface(ClassInterfaceType.None)]
@@ -69,12 +70,12 @@ namespace ASCOM.PDM
         /// ASCOM DeviceID (COM ProgID) for this driver.
         /// The DeviceID is used by ASCOM applications to load the driver at runtime.
         /// </summary>
-        internal static string driverID = "ASCOM.PDM.Dome";
+        internal static string driverID = "ASCOM.NexDome.Dome";
         // TODO Change the descriptive string for your driver then remove this line
         /// <summary>
         /// Driver description that displays in the ASCOM Chooser.
         /// </summary>
-        private static string driverDescription = "PDM NexDome Driver";
+        private static string driverDescription = "NexDome Driver";
 
         internal static string comPortProfileName = "COM Port"; // Constants used for Profile persistence
         internal static string comPortDefault = "COM3";
@@ -188,7 +189,7 @@ namespace ASCOM.PDM
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PDM"/> class.
+        /// Initializes a new instance of the <see cref="NexDome"/> class.
         /// Must be public for COM registration.
         /// </summary>
         public Dome()
@@ -202,7 +203,7 @@ namespace ASCOM.PDM
             sourceCulture = CultureInfo.InvariantCulture;
             numberStyle = NumberStyles.Number;
 
-            tl = new TraceLogger("", "PDM");
+            tl = new TraceLogger("", "NexDome");
             ReadProfile(); // Read device configuration from the ASCOM Profile store
 
             tl.LogMessage("Dome", "Starting initialisation");
@@ -428,7 +429,7 @@ namespace ASCOM.PDM
         {
             get
             {
-                string name = "PDMDome " + DriverVersion;
+                string name = "NexDome " + DriverVersion;
                 tl.LogMessage("Name Get", name);
                 return name;
             }
@@ -743,7 +744,7 @@ namespace ASCOM.PDM
                                 LogMessage("Shutter Get", "State invalid ({0})", localInt);
                                 tl.LogMessage("OnSerialTimer STATE_SHUTTER_GET State invalid", value);
                             }
-                            
+
                         }
                         else
                         {

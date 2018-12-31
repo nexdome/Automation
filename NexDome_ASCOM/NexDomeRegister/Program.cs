@@ -32,7 +32,7 @@ namespace ASCOM
             ASCOM.DriverAccess.Dome device = new ASCOM.DriverAccess.Dome(id);
 #else
             // this can be replaced by this code, it avoids the chooser and creates the driver class directly.
-            ASCOM.DriverAccess.Dome device = new ASCOM.DriverAccess.Dome("ASCOM.PDM.Dome");
+            ASCOM.DriverAccess.Dome device = new ASCOM.DriverAccess.Dome("ASCOM.NexDome.Dome");
 #endif
             // now run some tests, adding code to your driver so that the tests will pass.
             // these first tests are common to all drivers.

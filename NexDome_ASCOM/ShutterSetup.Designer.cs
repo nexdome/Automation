@@ -1,4 +1,4 @@
-﻿namespace ASCOM.PDM
+﻿namespace ASCOM.NexDome
 {
     partial class ShutterSetup
     {
@@ -65,9 +65,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // gbxVoltages
-            // 
+            //
             this.gbxVoltages.Controls.Add(this.chkCloseImmediate);
             this.gbxVoltages.Controls.Add(this.lblLowWarn);
             this.gbxVoltages.Controls.Add(this.tbxCutoff);
@@ -81,9 +81,9 @@
             this.gbxVoltages.TabIndex = 51;
             this.gbxVoltages.TabStop = false;
             this.gbxVoltages.Text = "Voltage";
-            // 
+            //
             // chkCloseImmediate
-            // 
+            //
             this.chkCloseImmediate.AutoSize = true;
             this.chkCloseImmediate.Location = new System.Drawing.Point(9, 72);
             this.chkCloseImmediate.Name = "chkCloseImmediate";
@@ -93,9 +93,9 @@
             this.chkCloseImmediate.Text = "Close on low voltage";
             this.chkCloseImmediate.UseVisualStyleBackColor = true;
             this.chkCloseImmediate.CheckedChanged += new System.EventHandler(this.chkCloseImmediate_CheckedChanged);
-            // 
+            //
             // lblLowWarn
-            // 
+            //
             this.lblLowWarn.BackColor = System.Drawing.Color.Red;
             this.lblLowWarn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblLowWarn.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -106,18 +106,18 @@
             this.lblLowWarn.Text = "LOW";
             this.lblLowWarn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblLowWarn.Visible = false;
-            // 
+            //
             // tbxCutoff
-            // 
+            //
             this.tbxCutoff.Location = new System.Drawing.Point(55, 43);
             this.tbxCutoff.Name = "tbxCutoff";
             this.tbxCutoff.Size = new System.Drawing.Size(51, 20);
             this.tbxCutoff.TabIndex = 43;
             this.tbxCutoff.Text = "0";
             this.tbxCutoff.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
+            //
             // btnSetCutoff
-            // 
+            //
             this.btnSetCutoff.Location = new System.Drawing.Point(112, 41);
             this.btnSetCutoff.Name = "btnSetCutoff";
             this.btnSetCutoff.Size = new System.Drawing.Size(61, 23);
@@ -125,36 +125,36 @@
             this.btnSetCutoff.Text = "Set";
             this.btnSetCutoff.UseVisualStyleBackColor = true;
             this.btnSetCutoff.Click += new System.EventHandler(this.btnSetCutoff_Click);
-            // 
+            //
             // lblVoltage
-            // 
+            //
             this.lblVoltage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblVoltage.Location = new System.Drawing.Point(55, 18);
             this.lblVoltage.Name = "lblVoltage";
             this.lblVoltage.Size = new System.Drawing.Size(51, 19);
             this.lblVoltage.TabIndex = 47;
             this.lblVoltage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
+            //
             // lblCutOffTitle
-            // 
+            //
             this.lblCutOffTitle.AutoSize = true;
             this.lblCutOffTitle.Location = new System.Drawing.Point(6, 46);
             this.lblCutOffTitle.Name = "lblCutOffTitle";
             this.lblCutOffTitle.Size = new System.Drawing.Size(37, 13);
             this.lblCutOffTitle.TabIndex = 46;
             this.lblCutOffTitle.Text = "CutOff";
-            // 
+            //
             // lblVoltageTitle
-            // 
+            //
             this.lblVoltageTitle.AutoSize = true;
             this.lblVoltageTitle.Location = new System.Drawing.Point(6, 19);
             this.lblVoltageTitle.Name = "lblVoltageTitle";
             this.lblVoltageTitle.Size = new System.Drawing.Size(43, 13);
             this.lblVoltageTitle.TabIndex = 45;
             this.lblVoltageTitle.Text = "Voltage";
-            // 
+            //
             // gbxMotorSettings
-            // 
+            //
             this.gbxMotorSettings.Controls.Add(this.chkReversed);
             this.gbxMotorSettings.Controls.Add(this.lblMaxSpeedTitle);
             this.gbxMotorSettings.Controls.Add(this.btnMaxSpeed);
@@ -171,9 +171,9 @@
             this.gbxMotorSettings.TabIndex = 50;
             this.gbxMotorSettings.TabStop = false;
             this.gbxMotorSettings.Text = "Motor Settings";
-            // 
+            //
             // chkReversed
-            // 
+            //
             this.chkReversed.AutoSize = true;
             this.chkReversed.Location = new System.Drawing.Point(6, 153);
             this.chkReversed.Name = "chkReversed";
@@ -182,18 +182,18 @@
             this.chkReversed.Text = "Reversed";
             this.chkReversed.UseVisualStyleBackColor = true;
             this.chkReversed.CheckedChanged += new System.EventHandler(this.chkReversed_CheckedChanged);
-            // 
+            //
             // lblMaxSpeedTitle
-            // 
+            //
             this.lblMaxSpeedTitle.AutoSize = true;
             this.lblMaxSpeedTitle.Location = new System.Drawing.Point(6, 23);
             this.lblMaxSpeedTitle.Name = "lblMaxSpeedTitle";
             this.lblMaxSpeedTitle.Size = new System.Drawing.Size(61, 13);
             this.lblMaxSpeedTitle.TabIndex = 34;
             this.lblMaxSpeedTitle.Text = "Max Speed";
-            // 
+            //
             // btnMaxSpeed
-            // 
+            //
             this.btnMaxSpeed.Location = new System.Drawing.Point(108, 37);
             this.btnMaxSpeed.Name = "btnMaxSpeed";
             this.btnMaxSpeed.Size = new System.Drawing.Size(65, 23);
@@ -201,9 +201,9 @@
             this.btnMaxSpeed.Text = "Set";
             this.btnMaxSpeed.UseVisualStyleBackColor = true;
             this.btnMaxSpeed.Click += new System.EventHandler(this.btnMaxSpeed_Click);
-            // 
+            //
             // btnAcceleration
-            // 
+            //
             this.btnAcceleration.Location = new System.Drawing.Point(108, 79);
             this.btnAcceleration.Name = "btnAcceleration";
             this.btnAcceleration.Size = new System.Drawing.Size(65, 23);
@@ -211,42 +211,42 @@
             this.btnAcceleration.Text = "Set";
             this.btnAcceleration.UseVisualStyleBackColor = true;
             this.btnAcceleration.Click += new System.EventHandler(this.btnAcceleration_Click);
-            // 
+            //
             // lblAccelerationTitle
-            // 
+            //
             this.lblAccelerationTitle.AutoSize = true;
             this.lblAccelerationTitle.Location = new System.Drawing.Point(6, 65);
             this.lblAccelerationTitle.Name = "lblAccelerationTitle";
             this.lblAccelerationTitle.Size = new System.Drawing.Size(66, 13);
             this.lblAccelerationTitle.TabIndex = 37;
             this.lblAccelerationTitle.Text = "Acceleration";
-            // 
+            //
             // tbxMaxSpeed
-            // 
+            //
             this.tbxMaxSpeed.Location = new System.Drawing.Point(6, 39);
             this.tbxMaxSpeed.Name = "tbxMaxSpeed";
             this.tbxMaxSpeed.Size = new System.Drawing.Size(72, 20);
             this.tbxMaxSpeed.TabIndex = 35;
             this.tbxMaxSpeed.Text = "0";
-            // 
+            //
             // tbxAcceleration
-            // 
+            //
             this.tbxAcceleration.Location = new System.Drawing.Point(6, 81);
             this.tbxAcceleration.Name = "tbxAcceleration";
             this.tbxAcceleration.Size = new System.Drawing.Size(72, 20);
             this.tbxAcceleration.TabIndex = 38;
             this.tbxAcceleration.Text = "0";
-            // 
+            //
             // tbxStepsPerRotation
-            // 
+            //
             this.tbxStepsPerRotation.Location = new System.Drawing.Point(6, 123);
             this.tbxStepsPerRotation.Name = "tbxStepsPerRotation";
             this.tbxStepsPerRotation.Size = new System.Drawing.Size(72, 20);
             this.tbxStepsPerRotation.TabIndex = 41;
             this.tbxStepsPerRotation.Text = "0";
-            // 
+            //
             // btnStepsPerRotation
-            // 
+            //
             this.btnStepsPerRotation.Location = new System.Drawing.Point(108, 121);
             this.btnStepsPerRotation.Name = "btnStepsPerRotation";
             this.btnStepsPerRotation.Size = new System.Drawing.Size(65, 23);
@@ -254,18 +254,18 @@
             this.btnStepsPerRotation.Text = "Set";
             this.btnStepsPerRotation.UseVisualStyleBackColor = true;
             this.btnStepsPerRotation.Click += new System.EventHandler(this.btnStepsPerRotation_Click);
-            // 
+            //
             // lblStepsPerTitle
-            // 
+            //
             this.lblStepsPerTitle.AutoSize = true;
             this.lblStepsPerTitle.Location = new System.Drawing.Point(6, 107);
             this.lblStepsPerTitle.Name = "lblStepsPerTitle";
             this.lblStepsPerTitle.Size = new System.Drawing.Size(52, 13);
             this.lblStepsPerTitle.TabIndex = 40;
             this.lblStepsPerTitle.Text = "Steps per";
-            // 
+            //
             // gbxMovement
-            // 
+            //
             this.gbxMovement.Controls.Add(this.lblStatus);
             this.gbxMovement.Controls.Add(this.lblAltitude);
             this.gbxMovement.Controls.Add(this.btnSTOP);
@@ -277,27 +277,27 @@
             this.gbxMovement.TabIndex = 52;
             this.gbxMovement.TabStop = false;
             this.gbxMovement.Text = "Movement";
-            // 
+            //
             // lblStatus
-            // 
+            //
             this.lblStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblStatus.Location = new System.Drawing.Point(29, 52);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(122, 19);
             this.lblStatus.TabIndex = 49;
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
+            //
             // lblAltitude
-            // 
+            //
             this.lblAltitude.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblAltitude.Location = new System.Drawing.Point(65, 81);
             this.lblAltitude.Name = "lblAltitude";
             this.lblAltitude.Size = new System.Drawing.Size(51, 19);
             this.lblAltitude.TabIndex = 48;
             this.lblAltitude.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
+            //
             // btnSTOP
-            // 
+            //
             this.btnSTOP.BackColor = System.Drawing.Color.Red;
             this.btnSTOP.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSTOP.Location = new System.Drawing.Point(29, 154);
@@ -307,9 +307,9 @@
             this.btnSTOP.Text = "STOP";
             this.btnSTOP.UseVisualStyleBackColor = false;
             this.btnSTOP.Click += new System.EventHandler(this.btnSTOP_Click);
-            // 
+            //
             // btnCloseShutter
-            // 
+            //
             this.btnCloseShutter.Location = new System.Drawing.Point(53, 113);
             this.btnCloseShutter.Name = "btnCloseShutter";
             this.btnCloseShutter.Size = new System.Drawing.Size(75, 23);
@@ -317,9 +317,9 @@
             this.btnCloseShutter.Text = "Close";
             this.btnCloseShutter.UseVisualStyleBackColor = true;
             this.btnCloseShutter.Click += new System.EventHandler(this.btnClose_Click);
-            // 
+            //
             // btnOpenShutter
-            // 
+            //
             this.btnOpenShutter.Location = new System.Drawing.Point(53, 18);
             this.btnOpenShutter.Name = "btnOpenShutter";
             this.btnOpenShutter.Size = new System.Drawing.Size(75, 23);
@@ -327,9 +327,9 @@
             this.btnOpenShutter.Text = "Open";
             this.btnOpenShutter.UseVisualStyleBackColor = true;
             this.btnOpenShutter.Click += new System.EventHandler(this.btnOpen_Click);
-            // 
+            //
             // btnCloseForm
-            // 
+            //
             this.btnCloseForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCloseForm.Location = new System.Drawing.Point(303, 305);
             this.btnCloseForm.Name = "btnCloseForm";
@@ -338,19 +338,19 @@
             this.btnCloseForm.Text = "Close";
             this.btnCloseForm.UseVisualStyleBackColor = true;
             this.btnCloseForm.Click += new System.EventHandler(this.btnExit_Click);
-            // 
+            //
             // errorProvider1
-            // 
+            //
             this.errorProvider1.ContainerControl = this;
-            // 
+            //
             // timer1
-            // 
+            //
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick_1);
-            // 
+            //
             // lblRainWarn
-            // 
+            //
             this.lblRainWarn.BackColor = System.Drawing.Color.Red;
             this.lblRainWarn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblRainWarn.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -361,9 +361,9 @@
             this.lblRainWarn.Text = "RAINING";
             this.lblRainWarn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblRainWarn.Visible = false;
-            // 
+            //
             // groupBox1
-            // 
+            //
             this.groupBox1.Controls.Add(this.lblRainWarn);
             this.groupBox1.Location = new System.Drawing.Point(198, 12);
             this.groupBox1.Name = "groupBox1";
@@ -371,9 +371,9 @@
             this.groupBox1.TabIndex = 54;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Rain Status";
-            // 
+            //
             // ShutterSetup
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(390, 340);

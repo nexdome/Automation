@@ -1,4 +1,4 @@
-namespace ASCOM.PDM
+namespace ASCOM.NexDome
 {
     partial class ComportChooser
     {
@@ -36,9 +36,9 @@ namespace ASCOM.PDM
             this.comboBoxComPort = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.picASCOM)).BeginInit();
             this.SuspendLayout();
-            // 
+            //
             // cmdOK
-            // 
+            //
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.cmdOK.Location = new System.Drawing.Point(174, 76);
@@ -48,9 +48,9 @@ namespace ASCOM.PDM
             this.cmdOK.Text = "OK";
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
-            // 
+            //
             // cmdCancel
-            // 
+            //
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(174, 106);
@@ -60,12 +60,12 @@ namespace ASCOM.PDM
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
+            //
             // picASCOM
-            // 
+            //
             this.picASCOM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picASCOM.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.picASCOM.Image = global::ASCOM.PDM.Properties.Resources.ASCOM;
+            this.picASCOM.Image = global::ASCOM.NexDome.Properties.Resources.ASCOM;
             this.picASCOM.Location = new System.Drawing.Point(185, 9);
             this.picASCOM.Name = "picASCOM";
             this.picASCOM.Size = new System.Drawing.Size(48, 56);
@@ -74,18 +74,18 @@ namespace ASCOM.PDM
             this.picASCOM.TabStop = false;
             this.picASCOM.Click += new System.EventHandler(this.BrowseToAscom);
             this.picASCOM.DoubleClick += new System.EventHandler(this.BrowseToAscom);
-            // 
+            //
             // label2
-            // 
+            //
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(11, 15);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(58, 13);
             this.label2.TabIndex = 5;
             this.label2.Text = "Comm Port";
-            // 
+            //
             // chkTrace
-            // 
+            //
             this.chkTrace.AutoSize = true;
             this.chkTrace.Location = new System.Drawing.Point(96, 39);
             this.chkTrace.Name = "chkTrace";
@@ -93,17 +93,17 @@ namespace ASCOM.PDM
             this.chkTrace.TabIndex = 6;
             this.chkTrace.Text = "Trace on";
             this.chkTrace.UseVisualStyleBackColor = true;
-            // 
+            //
             // comboBoxComPort
-            // 
+            //
             this.comboBoxComPort.FormattingEnabled = true;
             this.comboBoxComPort.Location = new System.Drawing.Point(75, 12);
             this.comboBoxComPort.Name = "comboBoxComPort";
             this.comboBoxComPort.Size = new System.Drawing.Size(90, 21);
             this.comboBoxComPort.TabIndex = 7;
-            // 
+            //
             // ComportChooser
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(243, 139);

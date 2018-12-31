@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace ASCOM.PDM
+namespace ASCOM.NexDome
 {
     public partial class ShutterSetup : Form
     {

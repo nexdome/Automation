@@ -1,4 +1,4 @@
-﻿namespace ASCOM.PDM
+﻿namespace ASCOM.NexDome
 {
     partial class RotatorSetup
     {
@@ -96,16 +96,16 @@
             this.gbxRain.SuspendLayout();
             this.gbxAutoClose.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // btnClose
-            // 
+            //
             resources.ApplyResources(this.btnClose, "btnClose");
             this.btnClose.Name = "btnClose";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
+            //
             // gbxMotorSettings
-            // 
+            //
             this.gbxMotorSettings.Controls.Add(this.chkReversed);
             this.gbxMotorSettings.Controls.Add(this.lblMaxSpeed);
             this.gbxMotorSettings.Controls.Add(this.btnMaxSpeed);
@@ -119,67 +119,67 @@
             resources.ApplyResources(this.gbxMotorSettings, "gbxMotorSettings");
             this.gbxMotorSettings.Name = "gbxMotorSettings";
             this.gbxMotorSettings.TabStop = false;
-            // 
+            //
             // chkReversed
-            // 
+            //
             resources.ApplyResources(this.chkReversed, "chkReversed");
             this.chkReversed.Name = "chkReversed";
             this.chkReversed.UseVisualStyleBackColor = true;
             this.chkReversed.CheckedChanged += new System.EventHandler(this.chkReversed_CheckedChanged);
-            // 
+            //
             // lblMaxSpeed
-            // 
+            //
             resources.ApplyResources(this.lblMaxSpeed, "lblMaxSpeed");
             this.lblMaxSpeed.Name = "lblMaxSpeed";
-            // 
+            //
             // btnMaxSpeed
-            // 
+            //
             resources.ApplyResources(this.btnMaxSpeed, "btnMaxSpeed");
             this.btnMaxSpeed.Name = "btnMaxSpeed";
             this.btnMaxSpeed.UseVisualStyleBackColor = true;
             this.btnMaxSpeed.Click += new System.EventHandler(this.btnMaxSpeed_Click);
-            // 
+            //
             // btnAcceleration
-            // 
+            //
             resources.ApplyResources(this.btnAcceleration, "btnAcceleration");
             this.btnAcceleration.Name = "btnAcceleration";
             this.btnAcceleration.UseVisualStyleBackColor = true;
             this.btnAcceleration.Click += new System.EventHandler(this.btnAcceleration_Click);
-            // 
+            //
             // lblAcceleration
-            // 
+            //
             resources.ApplyResources(this.lblAcceleration, "lblAcceleration");
             this.lblAcceleration.Name = "lblAcceleration";
-            // 
+            //
             // tbxMaxSpeed
-            // 
+            //
             resources.ApplyResources(this.tbxMaxSpeed, "tbxMaxSpeed");
             this.tbxMaxSpeed.Name = "tbxMaxSpeed";
-            // 
+            //
             // tbxAcceleration
-            // 
+            //
             resources.ApplyResources(this.tbxAcceleration, "tbxAcceleration");
             this.tbxAcceleration.Name = "tbxAcceleration";
-            // 
+            //
             // tbxStepsPerRotation
-            // 
+            //
             resources.ApplyResources(this.tbxStepsPerRotation, "tbxStepsPerRotation");
             this.tbxStepsPerRotation.Name = "tbxStepsPerRotation";
-            // 
+            //
             // btnStepsPerRotation
-            // 
+            //
             resources.ApplyResources(this.btnStepsPerRotation, "btnStepsPerRotation");
             this.btnStepsPerRotation.Name = "btnStepsPerRotation";
             this.btnStepsPerRotation.UseVisualStyleBackColor = true;
             this.btnStepsPerRotation.Click += new System.EventHandler(this.btnStepsPerRotation_Click);
-            // 
+            //
             // lblStepsPer
-            // 
+            //
             resources.ApplyResources(this.lblStepsPer, "lblStepsPer");
             this.lblStepsPer.Name = "lblStepsPer";
-            // 
+            //
             // gbxMovement
-            // 
+            //
             this.gbxMovement.Controls.Add(this.lblAtPark);
             this.gbxMovement.Controls.Add(this.btnFullTurn);
             this.gbxMovement.Controls.Add(this.lblSeekModeTitle);
@@ -203,143 +203,143 @@
             resources.ApplyResources(this.gbxMovement, "gbxMovement");
             this.gbxMovement.Name = "gbxMovement";
             this.gbxMovement.TabStop = false;
-            // 
+            //
             // lblAtPark
-            // 
+            //
             this.lblAtPark.BackColor = System.Drawing.Color.LightGreen;
             resources.ApplyResources(this.lblAtPark, "lblAtPark");
             this.lblAtPark.Name = "lblAtPark";
-            // 
+            //
             // btnFullTurn
-            // 
+            //
             resources.ApplyResources(this.btnFullTurn, "btnFullTurn");
             this.btnFullTurn.Name = "btnFullTurn";
             this.btnFullTurn.UseVisualStyleBackColor = true;
             this.btnFullTurn.Click += new System.EventHandler(this.btnFullTurn_Click);
-            // 
+            //
             // lblSeekModeTitle
-            // 
+            //
             resources.ApplyResources(this.lblSeekModeTitle, "lblSeekModeTitle");
             this.lblSeekModeTitle.Name = "lblSeekModeTitle";
-            // 
+            //
             // btnSync
-            // 
+            //
             resources.ApplyResources(this.btnSync, "btnSync");
             this.btnSync.Name = "btnSync";
             this.btnSync.UseVisualStyleBackColor = true;
             this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
-            // 
+            //
             // lblSeekMode
-            // 
+            //
             this.lblSeekMode.BackColor = System.Drawing.Color.White;
             this.lblSeekMode.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             resources.ApplyResources(this.lblSeekMode, "lblSeekMode");
             this.lblSeekMode.Name = "lblSeekMode";
-            // 
+            //
             // btnSTOP
-            // 
+            //
             this.btnSTOP.BackColor = System.Drawing.Color.Red;
             resources.ApplyResources(this.btnSTOP, "btnSTOP");
             this.btnSTOP.Name = "btnSTOP";
             this.btnSTOP.UseVisualStyleBackColor = false;
             this.btnSTOP.Click += new System.EventHandler(this.btnSTOP_Click);
-            // 
+            //
             // btnCalibrate
-            // 
+            //
             resources.ApplyResources(this.btnCalibrate, "btnCalibrate");
             this.btnCalibrate.Name = "btnCalibrate";
             this.btnCalibrate.UseVisualStyleBackColor = true;
             this.btnCalibrate.Click += new System.EventHandler(this.btnCalibrate_Click);
-            // 
+            //
             // lblMultiStatus
-            // 
+            //
             this.lblMultiStatus.BackColor = System.Drawing.Color.White;
             this.lblMultiStatus.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             resources.ApplyResources(this.lblMultiStatus, "lblMultiStatus");
             this.lblMultiStatus.Name = "lblMultiStatus";
-            // 
+            //
             // btnGoToAz
-            // 
+            //
             resources.ApplyResources(this.btnGoToAz, "btnGoToAz");
             this.btnGoToAz.Name = "btnGoToAz";
             this.btnGoToAz.UseVisualStyleBackColor = true;
             this.btnGoToAz.Click += new System.EventHandler(this.btnGotoAz_Click);
-            // 
+            //
             // btnRotateCCW
-            // 
+            //
             resources.ApplyResources(this.btnRotateCCW, "btnRotateCCW");
             this.btnRotateCCW.Name = "btnRotateCCW";
             this.btnRotateCCW.UseVisualStyleBackColor = true;
             this.btnRotateCCW.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnRotateCCW_MouseDown);
             this.btnRotateCCW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnRotate_UP);
-            // 
+            //
             // btnRotateCW
-            // 
+            //
             resources.ApplyResources(this.btnRotateCW, "btnRotateCW");
             this.btnRotateCW.Name = "btnRotateCW";
             this.btnRotateCW.UseVisualStyleBackColor = true;
             this.btnRotateCW.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnRotateCW_MouseDown);
             this.btnRotateCW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnRotate_UP);
-            // 
+            //
             // lblHomeStatusTitle
-            // 
+            //
             resources.ApplyResources(this.lblHomeStatusTitle, "lblHomeStatusTitle");
             this.lblHomeStatusTitle.Name = "lblHomeStatusTitle";
-            // 
+            //
             // btnGoToPos
-            // 
+            //
             resources.ApplyResources(this.btnGoToPos, "btnGoToPos");
             this.btnGoToPos.Name = "btnGoToPos";
             this.btnGoToPos.UseVisualStyleBackColor = true;
             this.btnGoToPos.Click += new System.EventHandler(this.btnGoToPos_Click);
-            // 
+            //
             // btnHome
-            // 
+            //
             resources.ApplyResources(this.btnHome, "btnHome");
             this.btnHome.Name = "btnHome";
             this.btnHome.UseVisualStyleBackColor = true;
             this.btnHome.Click += new System.EventHandler(this.btnHome_Click);
-            // 
+            //
             // btnPark
-            // 
+            //
             resources.ApplyResources(this.btnPark, "btnPark");
             this.btnPark.Name = "btnPark";
             this.btnPark.UseVisualStyleBackColor = true;
             this.btnPark.Click += new System.EventHandler(this.btnPark_Click);
-            // 
+            //
             // lblHomedState
-            // 
+            //
             this.lblHomedState.BackColor = System.Drawing.Color.White;
             this.lblHomedState.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             resources.ApplyResources(this.lblHomedState, "lblHomedState");
             this.lblHomedState.Name = "lblHomedState";
-            // 
+            //
             // lblPosition
-            // 
+            //
             this.lblPosition.BackColor = System.Drawing.Color.White;
             this.lblPosition.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             resources.ApplyResources(this.lblPosition, "lblPosition");
             this.lblPosition.Name = "lblPosition";
-            // 
+            //
             // tbxGotoAz
-            // 
+            //
             resources.ApplyResources(this.tbxGotoAz, "tbxGotoAz");
             this.tbxGotoAz.Name = "tbxGotoAz";
-            // 
+            //
             // tbxGotoPos
-            // 
+            //
             resources.ApplyResources(this.tbxGotoPos, "tbxGotoPos");
             this.tbxGotoPos.Name = "tbxGotoPos";
-            // 
+            //
             // lblAzimuth
-            // 
+            //
             this.lblAzimuth.BackColor = System.Drawing.Color.White;
             this.lblAzimuth.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             resources.ApplyResources(this.lblAzimuth, "lblAzimuth");
             this.lblAzimuth.Name = "lblAzimuth";
-            // 
+            //
             // gbxVoltages
-            // 
+            //
             this.gbxVoltages.Controls.Add(this.lblLowWarn);
             this.gbxVoltages.Controls.Add(this.tbxCutoff);
             this.gbxVoltages.Controls.Add(this.btnSetCutoff);
@@ -349,45 +349,45 @@
             resources.ApplyResources(this.gbxVoltages, "gbxVoltages");
             this.gbxVoltages.Name = "gbxVoltages";
             this.gbxVoltages.TabStop = false;
-            // 
+            //
             // lblLowWarn
-            // 
+            //
             this.lblLowWarn.BackColor = System.Drawing.Color.Red;
             this.lblLowWarn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblLowWarn.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             resources.ApplyResources(this.lblLowWarn, "lblLowWarn");
             this.lblLowWarn.Name = "lblLowWarn";
-            // 
+            //
             // tbxCutoff
-            // 
+            //
             resources.ApplyResources(this.tbxCutoff, "tbxCutoff");
             this.tbxCutoff.Name = "tbxCutoff";
-            // 
+            //
             // btnSetCutoff
-            // 
+            //
             resources.ApplyResources(this.btnSetCutoff, "btnSetCutoff");
             this.btnSetCutoff.Name = "btnSetCutoff";
             this.btnSetCutoff.UseVisualStyleBackColor = true;
             this.btnSetCutoff.Click += new System.EventHandler(this.btnSetCutoff_Click);
-            // 
+            //
             // lblVoltageBox
-            // 
+            //
             this.lblVoltageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             resources.ApplyResources(this.lblVoltageBox, "lblVoltageBox");
             this.lblVoltageBox.Name = "lblVoltageBox";
-            // 
+            //
             // lblCutOffTitle
-            // 
+            //
             resources.ApplyResources(this.lblCutOffTitle, "lblCutOffTitle");
             this.lblCutOffTitle.Name = "lblCutOffTitle";
-            // 
+            //
             // lblVoltageTitle
-            // 
+            //
             resources.ApplyResources(this.lblVoltageTitle, "lblVoltageTitle");
             this.lblVoltageTitle.Name = "lblVoltageTitle";
-            // 
+            //
             // gbxHomeandPark
-            // 
+            //
             this.gbxHomeandPark.Controls.Add(this.lblHomePosTitle);
             this.gbxHomeandPark.Controls.Add(this.btnSetHome);
             this.gbxHomeandPark.Controls.Add(this.btnSetPark);
@@ -397,53 +397,53 @@
             resources.ApplyResources(this.gbxHomeandPark, "gbxHomeandPark");
             this.gbxHomeandPark.Name = "gbxHomeandPark";
             this.gbxHomeandPark.TabStop = false;
-            // 
+            //
             // lblHomePosTitle
-            // 
+            //
             resources.ApplyResources(this.lblHomePosTitle, "lblHomePosTitle");
             this.lblHomePosTitle.Name = "lblHomePosTitle";
-            // 
+            //
             // btnSetHome
-            // 
+            //
             resources.ApplyResources(this.btnSetHome, "btnSetHome");
             this.btnSetHome.Name = "btnSetHome";
             this.btnSetHome.UseVisualStyleBackColor = true;
             this.btnSetHome.Click += new System.EventHandler(this.btnSetHome_Click);
-            // 
+            //
             // btnSetPark
-            // 
+            //
             resources.ApplyResources(this.btnSetPark, "btnSetPark");
             this.btnSetPark.Name = "btnSetPark";
             this.btnSetPark.UseVisualStyleBackColor = true;
             this.btnSetPark.Click += new System.EventHandler(this.btnSetPark_Click);
-            // 
+            //
             // lblParkPosTitle
-            // 
+            //
             resources.ApplyResources(this.lblParkPosTitle, "lblParkPosTitle");
             this.lblParkPosTitle.Name = "lblParkPosTitle";
-            // 
+            //
             // tbxHomeAz
-            // 
+            //
             resources.ApplyResources(this.tbxHomeAz, "tbxHomeAz");
             this.tbxHomeAz.Name = "tbxHomeAz";
-            // 
+            //
             // tbxParkAz
-            // 
+            //
             resources.ApplyResources(this.tbxParkAz, "tbxParkAz");
             this.tbxParkAz.Name = "tbxParkAz";
-            // 
+            //
             // timer1
-            // 
+            //
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
+            //
             // errorProvider1
-            // 
+            //
             this.errorProvider1.ContainerControl = this;
-            // 
+            //
             // gbxRain
-            // 
+            //
             this.gbxRain.Controls.Add(this.chkRainRequireTwice);
             this.gbxRain.Controls.Add(this.lblRainInterval);
             this.gbxRain.Controls.Add(this.tbxRainInterval);
@@ -452,53 +452,53 @@
             resources.ApplyResources(this.gbxRain, "gbxRain");
             this.gbxRain.Name = "gbxRain";
             this.gbxRain.TabStop = false;
-            // 
+            //
             // chkRainRequireTwice
-            // 
+            //
             resources.ApplyResources(this.chkRainRequireTwice, "chkRainRequireTwice");
             this.chkRainRequireTwice.Name = "chkRainRequireTwice";
             this.chkRainRequireTwice.UseVisualStyleBackColor = true;
-            // 
+            //
             // lblRainInterval
-            // 
+            //
             resources.ApplyResources(this.lblRainInterval, "lblRainInterval");
             this.lblRainInterval.Name = "lblRainInterval";
-            // 
+            //
             // tbxRainInterval
-            // 
+            //
             resources.ApplyResources(this.tbxRainInterval, "tbxRainInterval");
             this.tbxRainInterval.Name = "tbxRainInterval";
-            // 
+            //
             // lblRainState
-            // 
+            //
             this.lblRainState.BackColor = System.Drawing.Color.Red;
             this.lblRainState.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblRainState.ForeColor = System.Drawing.SystemColors.ControlText;
             resources.ApplyResources(this.lblRainState, "lblRainState");
             this.lblRainState.Name = "lblRainState";
-            // 
+            //
             // btnSetRainInterval
-            // 
+            //
             resources.ApplyResources(this.btnSetRainInterval, "btnSetRainInterval");
             this.btnSetRainInterval.Name = "btnSetRainInterval";
             this.btnSetRainInterval.UseVisualStyleBackColor = true;
             this.btnSetRainInterval.Click += new System.EventHandler(this.btnSetRainInterval_Click);
-            // 
+            //
             // gbxAutoClose
-            // 
+            //
             this.gbxAutoClose.Controls.Add(this.lblAutoCloseAction);
             this.gbxAutoClose.Controls.Add(this.cbxRainAction);
             resources.ApplyResources(this.gbxAutoClose, "gbxAutoClose");
             this.gbxAutoClose.Name = "gbxAutoClose";
             this.gbxAutoClose.TabStop = false;
-            // 
+            //
             // lblAutoCloseAction
-            // 
+            //
             resources.ApplyResources(this.lblAutoCloseAction, "lblAutoCloseAction");
             this.lblAutoCloseAction.Name = "lblAutoCloseAction";
-            // 
+            //
             // cbxRainAction
-            // 
+            //
             this.cbxRainAction.FormattingEnabled = true;
             this.cbxRainAction.Items.AddRange(new object[] {
             resources.GetString("cbxRainAction.Items"),
@@ -506,9 +506,9 @@
             resources.GetString("cbxRainAction.Items2")});
             resources.ApplyResources(this.cbxRainAction, "cbxRainAction");
             this.cbxRainAction.Name = "cbxRainAction";
-            // 
+            //
             // RotatorSetup
-            // 
+            //
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ControlBox = false;

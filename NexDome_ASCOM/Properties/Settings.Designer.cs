@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASCOM.PDM.Properties
+namespace ASCOM.NexDome.Properties
 {
 
 

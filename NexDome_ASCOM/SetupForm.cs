@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace ASCOM.PDM
+namespace ASCOM.NexDome
 {
     public partial class SetupForm : Form
     {
@@ -74,7 +74,7 @@ namespace ASCOM.PDM
 
         private void SetShutterBox(bool enabled)
         {
-            
+
             if (enabled == true)
             {
                 lblShutterVersion.Text = Dome.shutterVersion;
