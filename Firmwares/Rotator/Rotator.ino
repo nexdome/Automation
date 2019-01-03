@@ -235,6 +235,16 @@ void requestShutterData()
 			ReceiveWireless();
 			stepper.run(); // we don't want the stepper to stop
 		}
+		Wireless.print(String(STATE_SHUTTER_GET) + "#");
+		if (Wireless.available()) { // read response to avoid buffer overrun
+			ReceiveWireless();
+			stepper.run(); // we don't want the stepper to stop
+		}
+		Wireless.print(String(STATE_SHUTTER_GET) + "#");
+		if (Wireless.available()) { // read response to avoid buffer overrun
+			ReceiveWireless();
+			stepper.run(); // we don't want the stepper to stop
+		}
 		Wireless.print(String(VERSION_SHUTTER_GET) + "#");
 		if (Wireless.available()) { // read response to avoid buffer overrun
 			ReceiveWireless();
