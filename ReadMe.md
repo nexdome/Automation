@@ -21,17 +21,16 @@ Now contains all three pieces of software but is in no way compatible with any o
 ## First release March 18. 2018 ##
 The aim of this project is to provide three pieces of software that are required to operate a NexDome personal observatory under the ASCOM Platform and will consist of:
 
-- PDM Rotator written in C++ for the Arduino Leonardo
-- PDM Shutter written in C++ for the Arduino Leonardo
-- PDM Dome ASCOM driver for Rotator and Shutter in C#
+- Rotator written in C++ for the Arduino Leonardo (in Firmwares/Rotator).
+- Shutter written in C++ for the Arduino Leonardo (in Firmwares/Shutter).
+- Dome ASCOM driver for Rotator and Shutter in C# (in NexDome_ASCOM).
 
 [Pat]
 
 ## Prerequisites ##
-Rotator and Shutter - Either Arduino IDE or Visual Studio with Visual Micro's Arduino add-on.
-(http://www.visualmicro.com/page/Arduino-Visual-Studio-Downloads.aspx).
+Rotator and Shutter - Arduino IDE ( https://www.arduino.cc/en/main/software ).
 
-PDM Dome - Visual Studio 2015+ with C#
+NexDome_ASCOM - Visual Studio 2015+ with C#
 
 ## Installing ##
 
@@ -44,7 +43,7 @@ Click on releases to find the binary downloads
 
 The ASCOM driver has a basic installer (default ASCOM provided) while the Arduio files have to be copied to whereever you want them. The Arduino IDE usually creates an Arduino directory in your documents folder which is a good place.
 
-Arduino programs must have the same name as the directory they are in so it's easiest to just copy the PDMRotator and PDMShutter directories rather than the individual files.
+Arduino programs must have the same name as the directory they are in so it's easiest to just copy the Rotator and Shutter directories rather than the individual files.
 
 To upload the firmwares, connect a USB cable to the unit then double click the .ino (not the .h - those automagically load). Set your board to Leonardo and choose the correct COM port (should say Arduino Leonardo(COMx). Then hit upload and a few seconds later it'll be finished.
 
@@ -52,13 +51,13 @@ Still to do:
 
 - Implement sleep mode for the shutter radio
 - Implement auto-close on the shutter after X minutes of not hearing from the Rotator.
-- Have Shutter poll the rotator for rain sensor status (right now rotator broadcasts the rain status which may not be a good idea later when the shutter is trying to sleep.
 
 ## Authors ##
-Pat Meloy
+Pat Meloy, Rodolphe Pineau
 
 ## Credits ##
 Grozzie2 for the source code I built upon https://github.com/grozzie2/NexDome
+Pat Meloy for the 2.0.0.0 base firmware.
 
 ## License ##
 GPL3
