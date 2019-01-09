@@ -1,5 +1,10 @@
-# Unofficial NexDome software project #
+# Official NexDome software project #
 
+## New firmware elease January 9, 2019 ##
+
+Pat hasn't been able to work on the new firmware but did a big commit for the 2.0.0.0 version.
+After spending a lot of time fixing issues with XBee communication and other stability problem the new firwares are now at version 2.1 . The X2 plugin for TheSkyX Pro works fine with this version. The ASCOM driver still has issue and need some fixes before it can work reliably with this firmware.
+Rodolphe.
 
 ## Third release May 1, 2018 ##
 
