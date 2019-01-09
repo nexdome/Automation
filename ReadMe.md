@@ -57,6 +57,7 @@ Pat Meloy, Rodolphe Pineau
 
 ## Credits ##
 Grozzie2 for the source code I built upon https://github.com/grozzie2/NexDome
+
 Pat Meloy for the 2.0.0.0 base firmware.
 
 ## License ##
