@@ -50,7 +50,7 @@ String serialBuffer;
 #define Wireless Serial1
 String wirelessBuffer;
 
-const String version = "2.0.0.0";
+const String version = "2.1";
 
 #pragma endregion
 
