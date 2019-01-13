@@ -67,7 +67,7 @@ bool SentHello = false;
 // TODO: Fix rain sensor readings.
 // Status is checked periodically (see Rotator.RainCheckInterval()) but only sent when
 // the status changes (hence the lastIsRaining).
-unsigned long nextRainCheck;
+unsigned long nextRainCheckTimerStart = 0;
 bool currentRainStatus = false;
 #pragma endregion
 
@@ -147,19 +147,17 @@ const char VOLTSCLOSE_SHUTTER_CMD			= 'B'; // Get/Set if shutter closes and rota
 ** routine sets XBee.present to true if the XBee responds.
 */
 
-unsigned long delayUntil;
 #pragma region "Arduino Setup and Loop"
 void setup()
 {
 	Computer.begin(9600);
 	Wireless.begin(9600);
-	delayUntil = millis() + 25000;
+	delay(25000);
 }
 
 void loop()
 {
 
-	if (millis() < delayUntil) return;
 	if (!XbeeStarted) {
 		if (!Rotator.radioIsConfigured && !isConfiguringWireless) {
 			DBPrint("Initializing Radio");
@@ -300,7 +298,10 @@ void CheckForRain()
 {
 	// Only check periodically (fast reads seem to mess it up)
 	// Disable by setting rain check interval to 0;
-	if (millis() > nextRainCheck) {
+	if(Rotator.GetRainCheckInterval() == 0)
+		return;
+
+	if (millis() - nextRainCheckTimerStart >= (Rotator.GetRainCheckInterval() * 1000)) {
 		currentRainStatus = Rotator.GetRainStatus();
 		if (currentRainStatus) {
 			if (Rotator.GetRainAction() == 1)
@@ -309,7 +310,7 @@ void CheckForRain()
 			if (Rotator.GetRainAction() == 2)
 				Rotator.SetAzimuth(Rotator.GetParkAzimuth());
 		}
-		nextRainCheck = millis() + (Rotator.GetRainCheckInterval() * 1000);
+		nextRainCheckTimerStart = millis();
 	}
 }
 

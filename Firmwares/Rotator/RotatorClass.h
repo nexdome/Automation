@@ -174,8 +174,9 @@ private:
 	long		_stepsToStop;
 	long		_stepsPerRotation;
 	float		_stepsPerDegree;
-	unsigned long	_moveOffUntil;
-
+	unsigned long	_moveOffUntilStart = 0;
+	unsigned long _moveOffUntilLapse = 5000;
+	unsigned long nextCheckLapse = 10000;
 
 	int			_moveDirection;
 
@@ -184,10 +185,12 @@ private:
 	int			_volts;
 	int			_cutOffVolts;
 	int			ReadVolts();
+	unsigned long nextPeriodicReadingLapse = 10;
 
 	// Utility
 	long		GetPositionalDistance(const long, const long);
 
+	unsigned long nextCheckButtonLapse = 10;
 	void		ButtonCheck();
 
 	bool		LoadFromEEProm();
@@ -502,7 +505,7 @@ void RotatorClass::StartCalibrating()
 	// calibrate at half speed .. should increase precision
 	SetHomingCalibratingSpeed(_maxSpeed/2);
 	stepper.setCurrentPosition(0);
-	_moveOffUntil = millis() + 5000;
+	_moveOffUntilStart = millis();
 	_doStepsPerRotation = false;
 	MoveRelative(_stepsPerRotation  * 1.5);
 }
@@ -514,7 +517,7 @@ void RotatorClass::Calibrate()
 	if (_seekMode > HOMING_HOME) {
 		switch (_seekMode) {
 			case(CALIBRATION_MOVEOFF):
-				if (millis() >= _moveOffUntil) {
+				if (millis() - _moveOffUntilStart >= _moveOffUntilLapse) {
 					_seekMode = CALIBRATION_MEASURE;
 				}
 				break;
@@ -753,18 +756,18 @@ float RotatorClass::GetAzimuth()
 void RotatorClass::Run()
 {
 	static bool wasRunning = false;
-	static unsigned long nextPeriodicReading = 0;
+	static unsigned long nextPeriodicReadingStart = 0;
 	long stepsFromZero;
-	static unsigned int nextCheck = 0;
+	static unsigned int nextCheckButtonStart = 0;
 
-	if (millis() > nextCheck) {
-		nextCheck += 10;
+	if (millis() - nextCheckButtonStart >= nextCheckButtonLapse) {
+		nextCheckButtonStart = millis();
 		ButtonCheck();
 	}
 
-	if (nextPeriodicReading < millis()) {
+	if (millis() - nextPeriodicReadingStart >= nextPeriodicReadingLapse) {
 		_volts = ReadVolts();
-		nextPeriodicReading = millis() + 10000;
+		nextPeriodicReadingStart = millis();
 	}
 
 	_isAtHome = false; // default to not at home switch
