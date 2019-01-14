@@ -76,8 +76,7 @@ const char VOLTSCLOSE_SHUTTER_CMD	= 'B';
 #pragma endregion
 
 
-ShutterClass Shutter = ShutterClass();
-
+ShutterClass Shutter;
 
 int configStep = 0;
 String ATString = "";
@@ -85,11 +84,15 @@ String ATString = "";
 bool SentHello = false, XbeeStarted = false;
 bool isRaining = false;
 
-unsigned long delayUntil;
-unsigned long nextUpdateTime, nextStepTime;
+StopWatch nextUpdateTimer;
+StopWatch nextStepTimer;
+
 unsigned long updateInterval, stepInterval;
-unsigned long nextVoltageUpdate, voltUpdateInterval = 5000;
-unsigned long nextRainCheck;
+
+StopWatch nextVoltageUpdateTimer;
+unsigned long voltUpdateInterval = 5000;
+
+StopWatch nextRainCheckTimer;
 bool doFinalUpdate = false;
 
 void setup()
@@ -98,15 +101,17 @@ void setup()
 	Wireless.begin(9600);
 	updateInterval = 1000;
 	stepInterval = 100;
-	delayUntil = millis() + 20000;
 	DBPrintln("Waiting for communications setup");
+	delay(20000);
+	// reset all timers
+	nextUpdateTimer.reset();
+	nextStepTimer.reset();
+	nextVoltageUpdateTimer.reset();
+	nextRainCheckTimer.reset();
 }
 
 void loop()
 {
-	if (millis() < delayUntil)
-		return;
-
 	if (Computer.available() > 0)
 		ReceiveSerial();
 
@@ -126,9 +131,10 @@ void loop()
 		}
 	}
 
-
-	if (millis() > nextUpdateTime && (Shutter.sendUpdates || doFinalUpdate))
+	if (nextUpdateTimer.elapsed() >= updateInterval  && (Shutter.sendUpdates || doFinalUpdate)) {
 		UpdateRotator();
+		nextUpdateTimer.reset();
+		}
 
 	if (!Shutter.isConfiguringWireless && SentHello) {
 		if (Shutter.rainCheckInterval > 0) {
@@ -157,19 +163,19 @@ void UpdateRotator()
 	static bool sentState = false, sentPosition = false, runningAtaStart = false;
 
 	runningAtaStart = Shutter.sendUpdates; // Store motion state to comparison at end
-
-	if (nextVoltageUpdate < millis()) {
+	if(nextVoltageUpdateTimer.elapsed() >= voltUpdateInterval) {
 		Wireless.print(VOLTS_SHUTTER_CMD + Shutter.GetVoltString() + "#");
-		nextVoltageUpdate = millis() + voltUpdateInterval;
+		nextVoltageUpdateTimer.reset();
 	}
 
-	if (nextStepTime > millis())
+	if(nextStepTimer.elapsed() < stepInterval) {
 		return;
+	}
 
 	if (!sentState) {
 		Wireless.print(String(STATE_SHUTTER_GET) + String(Shutter.GetState()) + "#");
 		sentState = true;
-		nextStepTime = millis() + stepInterval;
+		nextStepTimer.reset();
 		return;
 	}
 
@@ -177,18 +183,18 @@ void UpdateRotator()
 	//if (!sentElevation) {
 	//	Wireless.print(String(ELEVATION_SHUTTER_CMD) + String(Shutter.GetElevation()) + "#");
 	//	sentElevation = true;
-	//	nextStepTime = millis() + stepInterval;
+	// nextStepTimer.reset()
 	//	return;
 	//}
 
 	if (!sentPosition) {
 		Wireless.print(String(POSITION_SHUTTER_GET) + String(Shutter.GetPosition()) + "#");
 		sentPosition = true;
-		nextStepTime = millis() + stepInterval;
+		nextStepTimer.reset();
 		return;
 	}
 
-	nextUpdateTime = millis() + updateInterval;
+	nextUpdateTimer.reset();
 
 	sentState = sentPosition = false; // Reset the bools for the next cycle
 	Shutter.sendUpdates = false;
@@ -244,10 +250,10 @@ void SendHello()
 #pragma endregion
 void RainCheck()
 {
-	if (millis() > nextRainCheck) {
+	if(nextRainCheckTimer.elapsed() >= Shutter.rainCheckInterval) {
 		DBPrintln("Asking for rain status");
 		Wireless.print(String(RAIN_ROTATOR_GET) + "#");
-		nextRainCheck = millis() + Shutter.rainCheckInterval;
+		nextRainCheckTimer.reset();
 	}
 }
 

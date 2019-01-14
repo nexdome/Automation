@@ -26,6 +26,8 @@
 #include "WProgram.h"
 #endif
 
+#include "StopWatch.h"
+
 // set this to match the type of steps configured on the
 // stepper controller
 #define STEP_TYPE 8
@@ -174,7 +176,7 @@ private:
 	long		_stepsToStop;
 	long		_stepsPerRotation;
 	float		_stepsPerDegree;
-	unsigned long	_moveOffUntilStart = 0;
+	StopWatch _moveOffUntilTimer;
 	unsigned long _moveOffUntilLapse = 5000;
 	unsigned long nextCheckLapse = 10000;
 
@@ -185,11 +187,13 @@ private:
 	int			_volts;
 	int			_cutOffVolts;
 	int			ReadVolts();
+	StopWatch _periodicReadingTimer;
 	unsigned long nextPeriodicReadingLapse = 10;
 
 	// Utility
 	long		GetPositionalDistance(const long, const long);
 
+	StopWatch _buttonCheckTimer;
 	unsigned long nextCheckButtonLapse = 10;
 	void		ButtonCheck();
 
@@ -217,6 +221,9 @@ RotatorClass::RotatorClass()
 
 	stepper.setMaxSpeed(5000);
 	stepper.setAcceleration(7000);
+	// reset all timers
+	_moveOffUntilTimer.reset();
+	_periodicReadingTimer.reset();
 }
 
 #pragma region "Controller Related"
@@ -505,7 +512,7 @@ void RotatorClass::StartCalibrating()
 	// calibrate at half speed .. should increase precision
 	SetHomingCalibratingSpeed(_maxSpeed/2);
 	stepper.setCurrentPosition(0);
-	_moveOffUntilStart = millis();
+	_moveOffUntilTimer.reset();
 	_doStepsPerRotation = false;
 	MoveRelative(_stepsPerRotation  * 1.5);
 }
@@ -517,7 +524,7 @@ void RotatorClass::Calibrate()
 	if (_seekMode > HOMING_HOME) {
 		switch (_seekMode) {
 			case(CALIBRATION_MOVEOFF):
-				if (millis() - _moveOffUntilStart >= _moveOffUntilLapse) {
+				if(_moveOffUntilTimer.elapsed() >= _moveOffUntilLapse) {
 					_seekMode = CALIBRATION_MEASURE;
 				}
 				break;
@@ -756,18 +763,16 @@ float RotatorClass::GetAzimuth()
 void RotatorClass::Run()
 {
 	static bool wasRunning = false;
-	static unsigned long nextPeriodicReadingStart = 0;
 	long stepsFromZero;
-	static unsigned int nextCheckButtonStart = 0;
 
-	if (millis() - nextCheckButtonStart >= nextCheckButtonLapse) {
-		nextCheckButtonStart = millis();
+	if (_buttonCheckTimer.elapsed() >= nextCheckButtonLapse) {
 		ButtonCheck();
+		_buttonCheckTimer.reset();
 	}
 
-	if (millis() - nextPeriodicReadingStart >= nextPeriodicReadingLapse) {
+	if (_periodicReadingTimer.elapsed() >= nextPeriodicReadingLapse) {
 		_volts = ReadVolts();
-		nextPeriodicReadingStart = millis();
+		_periodicReadingTimer.reset();
 	}
 
 	_isAtHome = false; // default to not at home switch

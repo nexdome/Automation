@@ -21,7 +21,6 @@
 
 #include "RotatorClass.h"
 #include "RemoteShutterClass.h"
-//#include <XBeeClass.h>
 #include <AccelStepper.h>
 
 //todo: Implement low voltage safety
@@ -31,9 +30,8 @@
 // that'll stop mistaken "Invalid" messages.
 
 #pragma region Devices
-RotatorClass Rotator  = RotatorClass();
-RemoteShutterClass RemoteShutter = RemoteShutterClass();
-//XBeeClass XBee = XBeeClass();
+RotatorClass Rotator ;
+RemoteShutterClass RemoteShutter;
 
 #define VERSION "2.1"
 
@@ -67,7 +65,9 @@ bool SentHello = false;
 // TODO: Fix rain sensor readings.
 // Status is checked periodically (see Rotator.RainCheckInterval()) but only sent when
 // the status changes (hence the lastIsRaining).
-unsigned long nextRainCheckTimerStart = 0;
+
+StopWatch Rainchecktimer;
+
 bool currentRainStatus = false;
 #pragma endregion
 
@@ -153,6 +153,7 @@ void setup()
 	Computer.begin(9600);
 	Wireless.begin(9600);
 	delay(25000);
+	Rainchecktimer.reset();
 }
 
 void loop()
@@ -300,8 +301,7 @@ void CheckForRain()
 	// Disable by setting rain check interval to 0;
 	if(Rotator.GetRainCheckInterval() == 0)
 		return;
-
-	if (millis() - nextRainCheckTimerStart >= (Rotator.GetRainCheckInterval() * 1000)) {
+	if(Rainchecktimer.elapsed() >= (Rotator.GetRainCheckInterval() * 1000) ) {
 		currentRainStatus = Rotator.GetRainStatus();
 		if (currentRainStatus) {
 			if (Rotator.GetRainAction() == 1)
@@ -310,7 +310,7 @@ void CheckForRain()
 			if (Rotator.GetRainAction() == 2)
 				Rotator.SetAzimuth(Rotator.GetParkAzimuth());
 		}
-		nextRainCheckTimerStart = millis();
+		Rainchecktimer.reset();
 	}
 }
 

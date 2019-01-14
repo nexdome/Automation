@@ -27,6 +27,7 @@
 #endif
 #pragma endregion
 
+#include "StopWatch.h"
 
 #define Computer Serial
 #define Wireless Serial1
@@ -160,7 +161,8 @@ private:
 
 	float				_adcConvert;
 	uint16_t		_volts;
-	uint64_t		_batteryCheckInterval = 120000;
+	StopWatch 	_batteryCheckTimer;
+	uint64_t		_batteryCheckInterval = 0; // we want to check battery immedialtelly
 	uint16_t		_cutoffVolts = 1220;
 	byte			_voltsClose = 0;
 
@@ -202,6 +204,9 @@ ShutterClass::ShutterClass()
 	GetEndSwitchStatus();
 	attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), ClosedInterrupt, FALLING);
 	attachInterrupt(digitalPinToInterrupt(OPENED_PIN), OpenInterrupt, FALLING);
+
+	// reset all timers
+	_batteryCheckTimer.reset();
 
 }
 
@@ -507,7 +512,6 @@ inline byte ShutterClass::GetVoltsClose()
 
 void ShutterClass::Run()
 {
-	static uint64_t nextBatteryCheck = 0;
 	static bool hitSwitch = false, firstBatteryCheck = true, doSync = true;
 
 	stepper.run();
@@ -544,17 +548,18 @@ void ShutterClass::Run()
 
 	if (stepper.isRunning() == false && shutterState != CLOSED && shutterState != OPEN)
 		shutterState = ERROR;
-
-	if (nextBatteryCheck < millis() && isConfiguringWireless == false) {
+	if (_batteryCheckTimer.elapsed() >= _batteryCheckInterval && isConfiguringWireless == false) {
 		DBPrintln("Measuring Battery");
 		_volts = MeasureVoltage();
 		Wireless.println("K" + GetVoltString());
 		if (firstBatteryCheck) {
-			nextBatteryCheck = millis() + 5000;
+			_batteryCheckTimer.reset();
+			_batteryCheckInterval  = 5000;
 			firstBatteryCheck = false;
 		}
 		else {
-			nextBatteryCheck = millis() + _batteryCheckInterval;
+			_batteryCheckTimer.reset();
+			_batteryCheckInterval = 120000;
 		}
 	}
 
