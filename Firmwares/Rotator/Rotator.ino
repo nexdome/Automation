@@ -339,7 +339,7 @@ void ReceiveComputer()
 		}
 	}
 	else {
-		computerBuffer += String(computerCharacter);
+		computerBuffer += computerCharacter;
 	}
 }
 
@@ -379,7 +379,7 @@ void ProcessSerialCommand()
 			if (hasValue) {
 				Rotator.SetAcceleration(value.toInt());
 			}
-			serialMessage = String(ACCELERATION_ROTATOR_CMD) + String(Rotator.GetAcceleration());
+			serialMessage = String(ACCELERATION_ROTATOR_CMD) + Rotator.GetAcceleration();
 			break;
 
 		case CALIBRATE_ROTATOR_CMD:
@@ -400,7 +400,7 @@ void ProcessSerialCommand()
 					Rotator.SetAzimuth(localFloat);
 				}
 			}
-			serialMessage = String(GOTO_ROTATOR_CMD) + String(Rotator.GetAzimuth());
+			serialMessage = String(GOTO_ROTATOR_CMD) + Rotator.GetAzimuth();
 			break;
 
 		case HELLO_CMD:
@@ -419,11 +419,11 @@ void ProcessSerialCommand()
 				if ((localFloat >= 0) && (localFloat < 360))
 					Rotator.SetHomeAzimuth(localFloat);
 			}
-			serialMessage = String(HOMEAZ_ROTATOR_CMD) + String(Rotator.GetHomeAzimuth());
+			serialMessage = String(HOMEAZ_ROTATOR_CMD) + Rotator.GetHomeAzimuth();
 			break;
 
 		case HOMESTATUS_ROTATOR_GET:
-			serialMessage = String(HOMESTATUS_ROTATOR_GET) + String(Rotator.GetHomeStatus());
+			serialMessage = String(HOMESTATUS_ROTATOR_GET) + Rotator.GetHomeStatus();
 			break;
 
 		case MOVE_RELATIVE_ROTATOR_CMD:
@@ -452,7 +452,7 @@ void ProcessSerialCommand()
 				}
 			}
 			if (serialMessage.length() == 0) {
-				serialMessage = localString + String(Rotator.GetParkAzimuth());
+				serialMessage = localString + Rotator.GetParkAzimuth();
 			}
 			break;
 
@@ -461,14 +461,14 @@ void ProcessSerialCommand()
 			{
 				if (!Rotator.GetVoltsAreLow()) {
 					Rotator.SetPosition(value.toInt());
-					serialMessage = String(POSITION_ROTATOR_CMD) + String(Rotator.GetPosition());
+					serialMessage = String(POSITION_ROTATOR_CMD) + Rotator.GetPosition();
 				}
 				else {
 					serialMessage = String(POSITION_ROTATOR_CMD) + "L";
 				}
 			}
 			else {
-				serialMessage = String(POSITION_ROTATOR_CMD) + String(Rotator.GetPosition());
+				serialMessage = String(POSITION_ROTATOR_CMD) + Rotator.GetPosition();
 			}
 			break;
 
@@ -476,14 +476,14 @@ void ProcessSerialCommand()
 			if (value.length() > 0) {
 				Rotator.SetRainAction(value.toInt());
 			}
-			serialMessage = String(RAIN_ROTATOR_ACTION) + String(Rotator.GetRainAction());
+			serialMessage = String(RAIN_ROTATOR_ACTION) + Rotator.GetRainAction();
 			break;
 
 		case RAIN_ROTATOR_TWICE_CMD:
 			if (value.length() > 0) {
 				Rotator.SetCheckRainTwice(value.equals("1"));
 			}
-			serialMessage = String(RAIN_ROTATOR_TWICE_CMD) + String(Rotator.GetRainCheckTwice());
+			serialMessage = String(RAIN_ROTATOR_TWICE_CMD) + Rotator.GetRainCheckTwice();
 			break;
 
 		case RAIN_ROTATOR_CMD:
@@ -491,35 +491,35 @@ void ProcessSerialCommand()
 				localInt = value.toInt();
 				if (localInt < 0) localInt = 0;
 				Rotator.SetRainInterval(localInt);
-				wirelessMessage = String(RAIN_INTERVAL_SET) + String(localInt);
+				wirelessMessage = String(RAIN_INTERVAL_SET) + localInt;
 			}
-			serialMessage = String(RAIN_ROTATOR_CMD) + String(Rotator.GetRainCheckInterval());
+			serialMessage = String(RAIN_ROTATOR_CMD) + Rotator.GetRainCheckInterval();
 			break;
 
 		case SPEED_ROTATOR_CMD:
 			if (hasValue)
 				Rotator.SetMaxSpeed(value.toInt());
-			serialMessage = String(SPEED_ROTATOR_CMD) + String(Rotator.GetMaxSpeed());
+			serialMessage = String(SPEED_ROTATOR_CMD) + Rotator.GetMaxSpeed();
 			break;
 
 		case REVERSED_ROTATOR_CMD:
 			if (hasValue)
 				Rotator.SetReversed(value.toInt());
-			serialMessage = String(REVERSED_ROTATOR_CMD) + String(Rotator.GetReversed());
+			serialMessage = String(REVERSED_ROTATOR_CMD) + Rotator.GetReversed();
 			break;
 
 		case SEEKSTATE_GET:
-			serialMessage = String(SEEKSTATE_GET) + String(Rotator.GetSeekMode());
+			serialMessage = String(SEEKSTATE_GET) + Rotator.GetSeekMode();
 			break;
 
 		case SLEW_ROTATOR_GET: // TODO: See if it's better for ASCOM to figure this out
-			serialMessage = String(SLEW_ROTATOR_GET) + String(Rotator.GetDirection());
+			serialMessage = String(SLEW_ROTATOR_GET) + Rotator.GetDirection();
 			break;
 
 		case STEPSPER_ROTATOR_CMD:
 			if (hasValue)
 				Rotator.SetStepsPerRotation(value.toInt());
-			serialMessage = String(STEPSPER_ROTATOR_CMD) + String(Rotator.GetStepsPerRotation());
+			serialMessage = String(STEPSPER_ROTATOR_CMD) + Rotator.GetStepsPerRotation();
 			break;
 
 		case SYNC_ROTATOR_CMD:
@@ -527,7 +527,7 @@ void ProcessSerialCommand()
 			if (localFloat >= 0 && localFloat < 360) {
 				Rotator.SyncHome(localFloat);
 				Rotator.SyncPosition(localFloat);
-				serialMessage = String(SYNC_ROTATOR_CMD) + String(Rotator.GetPosition());
+				serialMessage = String(SYNC_ROTATOR_CMD) + Rotator.GetPosition();
 			}
 			break;
 
@@ -540,7 +540,7 @@ void ProcessSerialCommand()
 			if (hasValue) {
 				Rotator.SetLowVoltageCutoff(value.toInt());
 			}
-			serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator.GetVoltString());
+			serialMessage = String(VOLTS_ROTATOR_CMD) + Rotator.GetVoltString();
 			break;
 	#pragma endregion
 
@@ -570,7 +570,7 @@ void ProcessSerialCommand()
 
 		case HOMESTATUS_SHUTTER_GET: // TODO: Figure this out if it's necessary
 				// todo: Create shutter calibration and get that status here
-				serialMessage = String(HOMESTATUS_SHUTTER_GET) + String(RemoteShutter.homedStatus);
+				serialMessage = String(HOMESTATUS_SHUTTER_GET) + RemoteShutter.homedStatus;
 				break;
 
 		case OPEN_SHUTTER_CMD:
@@ -581,11 +581,11 @@ void ProcessSerialCommand()
 			break;
 
 		case POSITION_SHUTTER_GET:
-				serialMessage = String(POSITION_SHUTTER_GET) + String(RemoteShutter.position);
+				serialMessage = String(POSITION_SHUTTER_GET) + RemoteShutter.position;
 				break;
 
 		case RAIN_SHUTTER_GET:
-			serialMessage = String(RAIN_SHUTTER_GET) + String(currentRainStatus ? "1" : "0");
+			serialMessage = String(RAIN_SHUTTER_GET) + currentRainStatus ? "1" : "0";
 			break;
 
 		case REVERSED_SHUTTER_CMD:
@@ -610,7 +610,7 @@ void ProcessSerialCommand()
 			localString = String(SPEED_SHUTTER_CMD);
 			if (hasValue) {
 				RemoteShutter.speed = value;
-				wirelessMessage = localString + String(value.toInt());
+				wirelessMessage = localString + value;
 			}
 			serialMessage = localString + RemoteShutter.speed;
 			break;
@@ -695,7 +695,7 @@ void ReceiveWireless()
 			}
 		}
 		else {
-			wirelessBuffer += String(wirelessCharacter);
+			wirelessBuffer += wirelessCharacter;
 		}
 	}
 }
@@ -741,7 +741,7 @@ void ProcessWireless()
 			break;
 
 		case RAIN_SHUTTER_GET:
-			wirelessMessage = String(RAIN_SHUTTER_GET) + String(Rotator.GetRainStatus() ? "1" : "0");
+			wirelessMessage = String(RAIN_SHUTTER_GET) + Rotator.GetRainStatus() ? "1" : "0";
 			DBPrint("Shutter rain " + value);
 			break;
 
