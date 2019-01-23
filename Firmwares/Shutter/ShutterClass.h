@@ -246,7 +246,7 @@ void ShutterClass::ReadEEProm()
 	//memset(&cfg, 0, sizeof(cfg));
 	EEPROM.get(EEPROM_LOCATION, cfg);
 	if (cfg.signature != EEPROM_SIGNATURE) {
-		DBPrintln("Shutter invalid sig, defaults " + String(cfg.signature) + " = " + EEPROM_SIGNATURE);
+		DBPrintln("Shutter invalid sig, defaults " + String(cfg.signature) + " = " + String(EEPROM_SIGNATURE));
 		DefaultEEProm();
 		WriteEEProm();
 		return;
@@ -269,7 +269,7 @@ void ShutterClass::WriteEEProm()
 {
 	Configuration cfg;
 
-	DBPrintln("Signature is " + EEPROM_SIGNATURE);
+	DBPrintln("Signature is " + String(EEPROM_SIGNATURE));
 	cfg.signature		= EEPROM_SIGNATURE;
 	cfg.sleepMode		= _sleepMode;
 	cfg.sleepPeriod		= _sleepPeriod;
@@ -283,7 +283,7 @@ void ShutterClass::WriteEEProm()
 	cfg.radioIsConfigured = radioIsConfigured;
 
 	EEPROM.put(EEPROM_LOCATION, cfg);
-	DBPrintln("Wrote sig of " + cfg.signature);
+	DBPrintln("Wrote sig of " + String(cfg.signature));
 }
 
 // INPUTS
@@ -319,7 +319,7 @@ int ShutterClass::MeasureVoltage()
 	float calc;
 
 	adc = analogRead(VOLTAGE_MONITOR_PIN);
-	DBPrintln("ADC returns " + adc);
+	DBPrintln("ADC returns " + String(adc));
 	calc = adc * _adcConvert;
 	return int(calc);
 }
@@ -398,7 +398,7 @@ inline bool ShutterClass::GetVoltsAreLow()
 
 String ShutterClass::GetVoltString()
 {
-	return String(_volts) + "," + _cutoffVolts;
+	return String(_volts) + "," + String(_cutoffVolts);
 }
 
 // Setters
@@ -573,7 +573,7 @@ void ShutterClass::Run()
 	}
 
 	if (wasRunning) { // So this bit only runs once after stopping.
-		DBPrintln("WasRunning " + String(shutterState) + " Hitswitch " + hitSwitch);
+		DBPrintln("WasRunning " + String(shutterState) + " Hitswitch " + String(hitSwitch));
 		_lastButtonPressed = 0;
 		wasRunning = false;
 		hitSwitch = false;

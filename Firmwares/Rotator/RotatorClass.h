@@ -332,7 +332,7 @@ inline bool RotatorClass::GetVoltsAreLow()
 
 inline String RotatorClass::GetVoltString()
 {
-	return String(_volts) + "," + _cutOffVolts;
+	return String(_volts) + "," + String(_cutOffVolts);
 }
 #pragma endregion
 
