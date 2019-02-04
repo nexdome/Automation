@@ -265,6 +265,12 @@ void ShutterClass::ReadEEProm()
 	_cutoffVolts	= cfg.cutoffVolts;
 	_voltsClose		= cfg.voltsClose;
 	watchdogInterval = cfg._watchdogInterval;
+
+	if(watchdogInterval > MAX_WATCHDOG_INTERVAL)
+		watchdogInterval = MAX_WATCHDOG_INTERVAL;
+	if(watchdogInterval < MIN_WATCHDOG_INTERVAL)
+		watchdogInterval = MIN_WATCHDOG_INTERVAL;
+
 	radioIsConfigured = cfg.radioIsConfigured;
 }
 
