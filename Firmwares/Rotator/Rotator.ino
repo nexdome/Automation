@@ -726,29 +726,6 @@ void ProcessSerialCommand()
 #pragma endregion
 
 #pragma region Wireless Communications
-void ReceiveWireless2()
-{
-	char wirelessCharacter;
-	// read as much as possible in one call to ReceiveWireless()
-	while(Wireless.available() > 0) {
-		wirelessCharacter= Wireless.read();
-
-		if (wirelessCharacter == '\r' || wirelessCharacter == '\n' || wirelessCharacter == '#') {
-			if (wirelessBuffer.length() > 0) {
-				if (isConfiguringWireless) {
-					ConfigXBee(wirelessBuffer);
-				}
-				else {
-					ProcessWireless();
-				}
-				wirelessBuffer = "";
-			}
-		}
-		else {
-			wirelessBuffer += String(wirelessCharacter);
-		}
-	}
-}
 
 #define MAX_TIMEOUT 10
 #define ERR_NO_DATA	-1
