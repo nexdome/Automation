@@ -56,7 +56,7 @@ typedef struct _Configuration {
 		uint8_t		reversed;
 		uint16_t	cutoffVolts;
 		byte		voltsClose;
-		long int	rainCheckInterval;
+		unsigned long	_watchdogInterval;
 		bool		radioIsConfigured;
 } Configuration;
 
@@ -77,6 +77,9 @@ Configuration config;
 #define 	EEPROM_LOCATION   100
 #define 	EEPROM_SIGNATURE 2000
 
+#define MIN_WATCHDOG_INTERVAL 60000
+#define MAX_WATCHDOG_INTERVAL 300000
+
 AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_PIN);
 #pragma endregion
 
@@ -96,7 +99,7 @@ public:
 	bool		wasRunning = false;
 	bool		sendUpdates = false;
 
-	long int	rainCheckInterval;
+	unsigned long watchdogInterval = 90000;	// 1.5 minutes
 
 	// Helper functions
 	float		PositionToAltitude(long);
@@ -131,7 +134,7 @@ public:
 	void		GotoPosition(const unsigned long);
 	void		GotoAltitude(const float);
 	void		MoveRelative(const long);
-	void		SetRainInterval(const int);
+	void		SetWatchdogInterval(const unsigned long);
 	byte		GetVoltsClose();
 	void		SetVoltsClose(const byte);
 
@@ -236,7 +239,7 @@ void ShutterClass::DefaultEEProm()
 	_reversed = false;
 	_cutoffVolts = 1220;
 	_voltsClose = 0;
-	rainCheckInterval = 30000;
+	watchdogInterval = 90000;
 	radioIsConfigured = false;
 }
 
@@ -261,7 +264,7 @@ void ShutterClass::ReadEEProm()
 	_maxSpeed		= cfg.maxSpeed;
 	_cutoffVolts	= cfg.cutoffVolts;
 	_voltsClose		= cfg.voltsClose;
-	rainCheckInterval = cfg.rainCheckInterval;
+	watchdogInterval = cfg._watchdogInterval;
 	radioIsConfigured = cfg.radioIsConfigured;
 }
 
@@ -279,7 +282,7 @@ void ShutterClass::WriteEEProm()
 	cfg.maxSpeed		= _maxSpeed;
 	cfg.cutoffVolts		= _cutoffVolts;
 	cfg.voltsClose		= _voltsClose;
-	cfg.rainCheckInterval = rainCheckInterval;
+	cfg._watchdogInterval = watchdogInterval;
 	cfg.radioIsConfigured = radioIsConfigured;
 
 	EEPROM.put(EEPROM_LOCATION, cfg);
@@ -493,9 +496,14 @@ void ShutterClass::MoveRelative(const long amount)
 	stepper.move(amount);
 }
 
-inline void ShutterClass::SetRainInterval(const int newInterval)
+inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 {
-	rainCheckInterval = newInterval;
+	if(newInterval > MAX_WATCHDOG_INTERVAL)
+		watchdogInterval = MAX_WATCHDOG_INTERVAL;
+	else 	if(newInterval < MIN_WATCHDOG_INTERVAL)
+		watchdogInterval = MIN_WATCHDOG_INTERVAL;
+	else
+		watchdogInterval = newInterval;
 	WriteEEProm();
 }
 
@@ -548,10 +556,10 @@ void ShutterClass::Run()
 
 	if (stepper.isRunning() == false && shutterState != CLOSED && shutterState != OPEN)
 		shutterState = ERROR;
+
 	if (_batteryCheckTimer.elapsed() >= _batteryCheckInterval && isConfiguringWireless == false) {
 		DBPrintln("Measuring Battery");
 		_volts = MeasureVoltage();
-		Wireless.println("K" + GetVoltString());
 		if (firstBatteryCheck) {
 			_batteryCheckTimer.reset();
 			_batteryCheckInterval  = 5000;

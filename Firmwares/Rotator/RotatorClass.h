@@ -48,7 +48,7 @@ typedef struct RotatorConfiguration {
 	float		homeAzimuth;
 	float		parkAzimuth;
 	int			cutoffVolts;
-	int			rainCheckInterval;
+	unsigned int	rainCheckInterval;
 	bool		rainCheckTwice;
 	byte		rainAction;
 	bool		radioIsConfigured;
@@ -102,7 +102,7 @@ public:
 	long		GetAcceleration();
 	long		GetStepsPerRotation();
 	byte		GetRainAction();
-	int			GetRainCheckInterval();
+	unsigned int			GetRainCheckInterval();
 	bool		GetRainCheckTwice();
 	bool		GetReversed();
 	float		GetAzimuth();
@@ -146,7 +146,7 @@ public:
 private:
 
 
-	int			_rainCheckInterval; // in seconds, function  multiplies by 1000
+	unsigned int	_rainCheckInterval; // in seconds, function  multiplies by 1000
 	bool		_rainCheckTwice;
 	byte		_rainAction;
 
@@ -463,7 +463,7 @@ inline byte RotatorClass::GetRainAction()
 	return _rainAction;
 }
 
-inline int RotatorClass::GetRainCheckInterval()
+inline unsigned int RotatorClass::GetRainCheckInterval()
 {
 	return _rainCheckInterval;
 }

@@ -62,7 +62,7 @@ const char ELEVATION_SHUTTER_CMD	= 'G'; // Get/Set altitude
 const char HELLO_CMD				= 'H'; // Let rotator know we're here
 const char OPEN_SHUTTER_CMD			= 'O'; // Open the shutter
 const char POSITION_SHUTTER_GET		= 'P'; // Get step position
-const char RAIN_INTERVAL_SET		= 'I'; // Tell us how long between checks in seconds
+const char WATCHDOG_INTERVAL_SET		= 'I'; // Tell us how long between checks in seconds
 const char RAIN_ROTATOR_GET			= 'F'; // Rotator telling us if it's raining or not
 const char SLEEP_SHUTTER_CMD		= 'S'; // Get/Set radio sleep settings
 const char SPEED_SHUTTER_CMD		= 'R'; // Get/Set step rate (speed)
@@ -84,30 +84,33 @@ String ATString = "";
 bool SentHello = false, XbeeStarted = false;
 bool isRaining = false;
 
-StopWatch nextUpdateTimer;
-StopWatch nextStepTimer;
+// StopWatch nextUpdateTimer;
+// StopWatch nextStepTimer;
+StopWatch watchdogTimer;
 
-unsigned long updateInterval, stepInterval;
+// unsigned long updateInterval;
+unsigned long stepInterval;
 
-StopWatch nextVoltageUpdateTimer;
+// StopWatch nextVoltageUpdateTimer;
 unsigned long voltUpdateInterval = 5000;
 
-StopWatch nextRainCheckTimer;
+// StopWatch nextRainCheckTimer;
 bool doFinalUpdate = false;
 
 void setup()
 {
 	Computer.begin(9600);
 	Wireless.begin(9600);
-	updateInterval = 1000;
+	// updateInterval = 1000;
 	stepInterval = 100;
 	DBPrintln("Waiting for communications setup");
-	delay(20000);
+	// delay(20000);
 	// reset all timers
-	nextUpdateTimer.reset();
-	nextStepTimer.reset();
-	nextVoltageUpdateTimer.reset();
-	nextRainCheckTimer.reset();
+	// nextUpdateTimer.reset();
+	// nextStepTimer.reset();
+	// nextVoltageUpdateTimer.reset();
+	// nextRainCheckTimer.reset();
+	watchdogTimer.reset();
 }
 
 void loop()
@@ -126,20 +129,14 @@ void loop()
 		}
 		else if (Shutter.radioIsConfigured) {
 			XbeeStarted = true;
-			SendHello();
 			DBPrintln("Radio started");
 		}
 	}
 
-	if (nextUpdateTimer.elapsed() >= updateInterval  && (Shutter.sendUpdates || doFinalUpdate)) {
-		UpdateRotator();
-		nextUpdateTimer.reset();
-		}
-
-	if (!Shutter.isConfiguringWireless && SentHello) {
-		if (Shutter.rainCheckInterval > 0) {
-			RainCheck();
-		}
+	if(watchdogTimer.elapsed() >= Shutter.watchdogInterval) {
+		// we lost communication with the rotator.. close everything.
+		if (Shutter.GetState() != CLOSED && Shutter.GetState() != CLOSING)
+			Shutter.Close();
 	}
 
 	Shutter.DoButtons();
@@ -158,6 +155,7 @@ void loop()
 ** doFinalUpdate is set to true so the update cycle will run one final time even though the motor is stopped.
 */
 
+/*
 void UpdateRotator()
 {
 	static bool sentState = false, sentPosition = false, runningAtaStart = false;
@@ -205,6 +203,7 @@ void UpdateRotator()
 		doFinalUpdate = false;
 	}
 }
+*/
 
 #pragma region XBeeRoutines
 void StartWirelessConfig()
@@ -239,23 +238,7 @@ inline void ConfigXBee(String result)
 	configStep++;
 }
 
-void SendHello()
-{
-	DBPrintln("Sending hello");
-	delay(1000);
-	Wireless.println(String(HELLO_CMD) + "#");
-	SentHello = true;
-}
-
 #pragma endregion
-void RainCheck()
-{
-	if(nextRainCheckTimer.elapsed() >= Shutter.rainCheckInterval) {
-		DBPrintln("Asking for rain status");
-		Wireless.print(String(RAIN_ROTATOR_GET) + "#");
-		nextRainCheckTimer.reset();
-	}
-}
 
 #pragma region Communications
 void ReceiveSerial()
@@ -281,13 +264,14 @@ void ReceiveWireless()
 	while(Wireless.available()) {
 		character = Wireless.read();
 
-		if (character == '\r' || character == '\n' || character == '#') {
+		if (character == '#') {
 			if (wirelessBuffer.length() > 0) {
 				if (Shutter.isConfiguringWireless) {
 					DBPrint("Configuring");
 					ConfigXBee(wirelessBuffer);
 				}
 				else {
+					watchdogTimer.reset(); // communication are working
 					ProcessMessages(wirelessBuffer);
 				}
 				wirelessBuffer = "";
@@ -333,6 +317,7 @@ void ProcessMessages(String buffer)
 			// Rotator update will be through UpdateRotator
 			DBPrintln("STOP!");
 			Shutter.Stop();
+			wirelessMessage = String(ABORT_CMD);
 			break;
 
 		case CLOSE_SHUTTER_CMD:
@@ -346,9 +331,10 @@ void ProcessMessages(String buffer)
 
 		case HELLO_CMD:
 			DBPrintln("Rotator says hello!");
-			SendHello();
-			DBPrintln("Sent hello back");
+			wirelessMessage = String(HELLO_CMD);
+			DBPrintln("Sending hello back");
 			break;
+
 		case OPEN_SHUTTER_CMD:
 			// Rotator update will be through UpdateRotator
 			DBPrintln("Received Open Shutter Command");
@@ -372,21 +358,23 @@ void ProcessMessages(String buffer)
 			DBPrintln(wirelessMessage);
 			break;
 
-		case RAIN_INTERVAL_SET:
+		case WATCHDOG_INTERVAL_SET:
 			if (value.length() > 0) {
-				Shutter.SetRainInterval(value.toInt());
-				DBPrintln("Rain check interval set to " + value);
+				Shutter.SetWatchdogInterval(value.toInt());
+				DBPrintln("Watchdog interval set to " + value + "ms");
 			}
 			else {
-				DBPrintln("Rain check interval " + String(Shutter.rainCheckInterval));
+				DBPrintln("Rain check interval " + String(Shutter.watchdogInterval));
 			}
+			wirelessMessage = String(WATCHDOG_INTERVAL_SET) + String(Shutter.watchdogInterval);
 			break;
 
 		case RAIN_ROTATOR_GET:
 			local16 = value.toInt();
 			if (local16 == 1) {
 				if (!isRaining) {
-					if (Shutter.GetState() != CLOSED && Shutter.GetState() != CLOSING) Shutter.Close();
+					if (Shutter.GetState() != CLOSED && Shutter.GetState() != CLOSING)
+						Shutter.Close();
 					isRaining = true;
 					DBPrintln("It's raining! (" + value + ")");
 				}
@@ -395,6 +383,7 @@ void ProcessMessages(String buffer)
 				isRaining = false;
 				DBPrintln("It's not raining");
 			}
+			wirelessMessage = String(RAIN_ROTATOR_GET);
 			break;
 
 		case REVERSED_SHUTTER_CMD:
@@ -450,12 +439,11 @@ void ProcessMessages(String buffer)
 
 		case VOLTSCLOSE_SHUTTER_CMD:
 			if (value.length() > 0) {
+				DBPrintln("Close on low voltage value inn" + String(value));
 				Shutter.SetVoltsClose(value.toInt());
 			}
-			else {
-				wirelessMessage = String(VOLTSCLOSE_SHUTTER_CMD) + String(Shutter.GetVoltsClose());
-				DBPrintln("Close on low voltage " + String(Shutter.GetVoltsClose()));
-			}
+			wirelessMessage = String(VOLTSCLOSE_SHUTTER_CMD) + String(Shutter.GetVoltsClose());
+			DBPrintln("Close on low voltage " + String(Shutter.GetVoltsClose()));
 			break;
 
 		default:
@@ -465,7 +453,7 @@ void ProcessMessages(String buffer)
 
 	if (wirelessMessage.length() > 0) {
 		DBPrintln(">>> Sending " + wirelessMessage);
-		Wireless.println(wirelessMessage +"#");
+		Wireless.print(wirelessMessage +"#");
 	}
 }
 #pragma endregion

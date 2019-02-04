@@ -50,8 +50,8 @@ public:
 	// ASCOM checks version and if it's blank then shutter doesn't exist
 	String	version = "";
 	String	volts = "";
-	String voltsClose = "";
-
+	String 	voltsClose = "";
+	String	watchdogInterval = "";
 	RemoteShutterClass();
 	// void SetState(int);
 };
