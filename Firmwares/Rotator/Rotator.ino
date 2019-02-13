@@ -119,6 +119,7 @@ const char STEPSPER_ROTATOR_CMD			= 't'; // GetSteps per rotation
 const char SYNC_ROTATOR_CMD				= 's'; // Sync to telescope
 const char VERSION_ROTATOR_GET			= 'v'; // Get Version string
 const char VOLTS_ROTATOR_CMD			= 'k'; // Get volts and get/set cutoff
+const char INIT_XBEE						= 'x'; // force a ConfigXBee
 
 const char ACCELERATION_SHUTTER_CMD		= 'E'; // Get/Set stepper acceleration
 const char CLOSE_SHUTTER_CMD			= 'C'; // Close shutter
@@ -163,11 +164,15 @@ void loop()
 
 	if (!XbeeStarted) {
 		if (!Rotator.radioIsConfigured && !isConfiguringWireless) {
+			DBPrint("Xbee reconfiguring");
 			StartWirelessConfig();
-			delay(3000);
+			DBPrint("Rotator.radioIsConfigured : " + String(Rotator.radioIsConfigured));
+			DBPrint("isConfiguringWireless : " + String(isConfiguringWireless));
 		}
 		else if (Rotator.radioIsConfigured) {
 			XbeeStarted = true;
+			wirelessBuffer = "";
+			DBPrint("Radio configured");
 			SendHello();
 		}
 	}
@@ -188,31 +193,37 @@ void loop()
 //<SUMMARY>Start configuration routine then send Hello broadcast</SUMMARY>
 void StartWirelessConfig()
 {
-	delay(10000);
+	Computer.println("Xbee configuration started");
+	delay(1100); // guard time before and after
 	isConfiguringWireless = true;
+	DBPrint("Sending +++");
 	Wireless.print("+++");
-	delay(1000);
+	delay(1100);
 }
 
 void ConfigXBee(String result)
 {
+	DBPrint("[ConfigXBee]");
+
 	if (configStep == 0) {
 		// ATString = "ATCE1,ID7734,AP0,SM0,RO0,WR,CN";
 		// CE1 for coordinator, rotation MY is 0,
-		ATString = "ATCE1,ID7734,CH0C,MY0,DH0,DLFFFF,AP0,SM0,WR,BD7,CN";
+		ATString = "ATCE1,ID7734,CH0C,MY0,DH0,DLFFFF,AP0,SM0,BD3,WR,CN";
 		Wireless.println(ATString);
+		DBPrint("Sending : " + ATString);
 	}
 	DBPrint("Result " + String(configStep) + ":" + result);
 
-	if (configStep > 5) {
-		// switch to 115200
-		Wireless.begin(115200);
-		DBPrint("Config finished");
+	if (configStep > 9) {
 		isConfiguringWireless = false;
 		Rotator.radioIsConfigured = true;
 		XbeeStarted = true;
 		Rotator.SaveToEEProm();
-		delay(4000);
+		delay(10000);
+		Computer.print("Xbee configuration finished");
+		while(Wireless.available() > 0) {
+			Wireless.read();
+		}
 	}
 	configStep++;
 }
@@ -546,6 +557,19 @@ void ProcessSerialCommand()
 		case RAIN_SHUTTER_GET:
 			serialMessage = String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0");
 			break;
+
+		case INIT_XBEE:
+			localString = String(INIT_XBEE);
+			Rotator.radioIsConfigured = false;
+			isConfiguringWireless = false;
+			XbeeStarted = false;
+			configStep = 0;
+			serialMessage = localString;
+			Wireless.print(localString + "#");
+			ReceiveWireless();
+			DBPrint("trying to reconfigure radio");
+			break;
+
 	#pragma endregion
 
 	#pragma region Shutter Commands
@@ -674,7 +698,7 @@ void ProcessSerialCommand()
 			localString = String(VOLTS_SHUTTER_CMD);
 			wirelessMessage = localString;
 			if (hasValue)
-				wirelessMessage += value;
+				wirelessMessage += String(value);
 
 			Wireless.print(wirelessMessage + "#");
 			ReceiveWireless();
@@ -737,26 +761,40 @@ int ReceiveWireless()
 	char wirelessCharacter;
 
 	wirelessBuffer = "";
+	if (isConfiguringWireless) {
+		DBPrint("[ReceiveWireless] isConfiguringWireless : " + String(isConfiguringWireless));
+		// read the response
+		do {
+			wirelessCharacter = Wireless.read();
+			if(wirelessCharacter != '\r' && wirelessCharacter != -1) {
+				wirelessBuffer += String(wirelessCharacter);
+			}
+		} while (wirelessCharacter != '\r');
+
+		DBPrint("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
+
+		ConfigXBee(wirelessBuffer);
+		return;
+	}
+
 	// wait for response, timeout after MAX_TIMEOUT times 10ms
 	while(Wireless.available() == 0) {
 		delay(10);
 		timeout++;
-		if(timeout >= MAX_TIMEOUT)
+		if(timeout >= MAX_TIMEOUT) {
 			return ERR_NO_DATA;
+			}
 	}
 
 	// read the response
 	do {
 		wirelessCharacter = Wireless.read();
-		if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter != '#') {
-			wirelessBuffer += wirelessCharacter;
+		if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter != '#' && wirelessCharacter != -1) {
+			wirelessBuffer += String(wirelessCharacter);
 		}
 	} while (wirelessCharacter != '#');
 
-	if (isConfiguringWireless) {
-		ConfigXBee(wirelessBuffer);
-	}
-	else if (wirelessBuffer.length() > 0) {
+	if (wirelessBuffer.length() > 0) {
 		ProcessWireless();
 	}
 	return OK;

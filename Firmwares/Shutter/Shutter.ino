@@ -72,6 +72,7 @@ const char STEPSPER_SHUTTER_CMD		= 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET		= 'V'; // Get version string
 const char VOLTS_SHUTTER_CMD		= 'K'; // Get volts and get/set cutoff
 const char VOLTSCLOSE_SHUTTER_CMD	= 'B';
+const char INIT_XBEE						= 'x'; // force a ConfigXBee
 
 #pragma endregion
 
@@ -103,13 +104,6 @@ void setup()
 	Wireless.begin(9600);
 	// updateInterval = 1000;
 	stepInterval = 100;
-	DBPrintln("Waiting for communications setup");
-	// delay(20000);
-	// reset all timers
-	// nextUpdateTimer.reset();
-	// nextStepTimer.reset();
-	// nextVoltageUpdateTimer.reset();
-	// nextRainCheckTimer.reset();
 	watchdogTimer.reset();
 }
 
@@ -123,13 +117,12 @@ void loop()
 
 	if (!XbeeStarted) {
 		if (!Shutter.radioIsConfigured  && !Shutter.isConfiguringWireless) {
-			DBPrintln("Wait for serial devices to start");
 			StartWirelessConfig();
-			delay(2000);
 		}
 		else if (Shutter.radioIsConfigured) {
 			XbeeStarted = true;
-			DBPrintln("Radio started");
+			wirelessBuffer = "";
+			DBPrintln("Radio configured");
 		}
 	}
 
@@ -208,11 +201,12 @@ void UpdateRotator()
 #pragma region XBeeRoutines
 void StartWirelessConfig()
 {
+	Computer.println("Xbee configuration started");
+	delay(1100); // guard time before and after
 	Shutter.isConfiguringWireless = true;
-	delay(1000);
 	DBPrintln("Sending +++");
 	Wireless.print("+++");
-	delay(1000);
+	delay(1100);
 }
 
 inline void ConfigXBee(String result)
@@ -220,20 +214,23 @@ inline void ConfigXBee(String result)
 	if (configStep == 0) {
 		// ATString = "ATCE0,ID7734,AP0,SM0,RO0,WR,CN";
 		//  CE0 for end device, shutter MY is 1
-		ATString = "ATCE0,ID7734,CH0C,MY1,DH0,DL0,AP0,SM0,WR,BD7,CN";
+		ATString = "ATCE0,ID7734,CH0C,MY1,DH0,DL0,AP0,SM0,BD3,WR,CN";
 		DBPrintln("AT String " + ATString);
 		Wireless.println(ATString);
+		Wireless.flush();
+
 	}
 	DBPrintln("Result " + String(configStep) + ":" + result);
-	if (configStep > 5) {
-		// switch to 115200
-		Wireless.begin(115200);
+	if (configStep > 9) {
 		Shutter.isConfiguringWireless = false;
-		DBPrintln("Wireless Configured");
 		Shutter.radioIsConfigured = true;
 		XbeeStarted = true;
 		Shutter.WriteEEProm();
-		delay(2000);
+		delay(10000);
+		Computer.println("Xbee configuration finished");
+		while(Wireless.available() > 0) {
+			Wireless.read();
+		}
 	}
 	configStep++;
 }
@@ -264,10 +261,10 @@ void ReceiveWireless()
 	while(Wireless.available()) {
 		character = Wireless.read();
 
-		if (character == '#') {
+		if (character == '\r' || character == '#') {
 			if (wirelessBuffer.length() > 0) {
 				if (Shutter.isConfiguringWireless) {
-					DBPrint("Configuring");
+					DBPrint("Configuring XBee");
 					ConfigXBee(wirelessBuffer);
 				}
 				else {
@@ -444,6 +441,14 @@ void ProcessMessages(String buffer)
 			}
 			wirelessMessage = String(VOLTSCLOSE_SHUTTER_CMD) + String(Shutter.GetVoltsClose());
 			DBPrintln("Close on low voltage " + String(Shutter.GetVoltsClose()));
+			break;
+
+		case INIT_XBEE:
+			Shutter.radioIsConfigured = false;
+			Shutter.isConfiguringWireless = false;
+			XbeeStarted = false;
+			configStep = 0;
+			wirelessMessage = String(INIT_XBEE);
 			break;
 
 		default:
