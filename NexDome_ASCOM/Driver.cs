@@ -517,7 +517,7 @@ namespace ASCOM.NexDome
             string message = "", command = "", value = "";
             int localInt;
 
-            tl.LogMessage("connected", connectedState.ToString());
+            //tl.LogMessage("connected", connectedState.ToString());
 
             if (!connectedState)
                 return;
@@ -1412,7 +1412,7 @@ namespace ASCOM.NexDome
                 canSetAltitude = Convert.ToBoolean(driverProfile.GetValue(driverID, "canSetAltitude", "Cans", "false"));
                 canSetAzimuth = Convert.ToBoolean(driverProfile.GetValue(driverID, "canSetAzimuth", "Cans", "true"));
                 canSetPark = Convert.ToBoolean(driverProfile.GetValue(driverID, "canSetPark", "Cans", "true"));
-                canSetShutter = Convert.ToBoolean(driverProfile.GetValue(driverID, "canSetShutter", "Cans", "false"));
+                canSetShutter = Convert.ToBoolean(driverProfile.GetValue(driverID, "canSetShutter", "Cans", "true"));
                 canSyncAzimuth = Convert.ToBoolean(driverProfile.GetValue(driverID, "canSyncAzimuth", "Cans", "true"));
             }
         }
