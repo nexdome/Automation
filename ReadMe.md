@@ -1,5 +1,11 @@
 # Official NexDome software project #
 
+## New release February 16, 2019 ##
+The latest firmwares and ASCOM driver have been released. You can find the ASCOM driver in the ASCOM_Driver_Releases directory.
+You can also dowload the release zip file that contains all the files for the 2.1 version.
+
+[Rodolphe]
+
 ## New firmware release January 9, 2019 ##
 
 Pat hasn't been able to work on the new firmware but did a big commit for the 2.0.0.0 version.
