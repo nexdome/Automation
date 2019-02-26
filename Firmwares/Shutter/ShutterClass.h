@@ -303,6 +303,7 @@ void ShutterClass::DoButtons()
 
 	if (digitalRead(BUTTON_OPEN) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != OPEN) {
 		DBPrintln("Button Open Shutter");
+		watchdogTimer.reset();
 		whichButtonPressed = BUTTON_OPEN;
 		shutterState = OPENING;
 		MoveRelative(_stepsPerStroke);
@@ -310,6 +311,7 @@ void ShutterClass::DoButtons()
 	}
 	else if (digitalRead(BUTTON_CLOSE) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != CLOSED) {
 		DBPrintln("Button Close Shutter");
+		watchdogTimer.reset();
 		whichButtonPressed = BUTTON_CLOSE;
 		shutterState = CLOSING;
 		MoveRelative(1 - _stepsPerStroke);

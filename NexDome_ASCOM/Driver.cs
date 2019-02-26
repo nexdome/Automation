@@ -88,6 +88,9 @@ namespace ASCOM.NexDome
         /// Private variable to hold the connected state
         /// </summary>
         private bool connectedState;
+        private bool isSlewing;
+        private bool isHoming;
+        private bool isMovingShutter;
 
         /// <summary>
         /// Private variable to hold an ASCOM Utilities object
@@ -178,6 +181,13 @@ namespace ASCOM.NexDome
             HOMED,
             ATHOME
         };
+       internal enum Seeks
+        {
+            HOMING_NONE, // Not homing or calibrating
+            HOMING_HOME, // Homing
+            CALIBRATION_MOVEOFF, // Ignore home until we've moved off while measuring the dome.
+            CALIBRATION_MEASURE // Measuring dome until home hit again.
+        };
 
         List<string> serialMessageList;
 
@@ -223,6 +233,9 @@ namespace ASCOM.NexDome
             StatusUpdateTimer.Tick += new EventHandler(OnStatusUpdateTimer);
             StatusUpdateTimer.Interval = 1000;
             StatusUpdateTimer.Enabled = false;
+            isSlewing = false;
+            isHoming = false;
+            isMovingShutter = false;
         }
 
 
@@ -231,7 +244,7 @@ namespace ASCOM.NexDome
         //
         #region Common properties and methods.
 
-        
+
         public bool Connected
         {
             get
@@ -449,6 +462,7 @@ namespace ASCOM.NexDome
             try
             {
                 serialPort.Write(command + "#");
+                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
             }
             catch (Exception ex)
             {
@@ -483,29 +497,29 @@ namespace ASCOM.NexDome
 
         #region "Timer and serial buffer processing"
 
-        private void OnStatusUpdateTimer(object source, EventArgs e)
+       private void OnStatusUpdateTimer(object source, EventArgs e)
         {
             SendSerial(POSITION_ROTATOR_CMD);
-            SendSerial(HOMED_ROTATOR_STATUS);
-            SendSerial(SEEKSTATE_GET);
-            SendSerial(SLEW_ROTATOR_STATUS);
-            if (canSetShutter == true)
-            {
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+            if(isHoming) {
+					SendSerial(HOMED_ROTATOR_STATUS);
+					SendSerial(SEEKSTATE_GET);
+            }
+
+            if(isSlewing)
+	            SendSerial(SLEW_ROTATOR_STATUS);
+
+            if (canSetShutter && isMovingShutter) {
                 SendSerial(POSITION_SHUTTER_GET);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
                 SendSerial(STATE_SHUTTER_GET);
             }
 
-            if (slowUpdateCounter >= 30)
-            {
+            if (slowUpdateCounter >= 30)  {
                 tl.LogMessage("Slow update", "Get");
                 SendSerial(RAIN_ROTATOR_GET);
                 SendSerial(VOLTS_ROTATOR_CMD);
+
                 slowUpdateCounter = 0;
-                if (canSetShutter)
-                {
-                    Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+                if (canSetShutter) {
                     SendSerial(VOLTS_SHUTTER_CMD);
                 }
             }
@@ -586,6 +600,8 @@ namespace ASCOM.NexDome
                     case HOMED_ROTATOR_STATUS:
                         if (int.TryParse(value, numberStyle, sourceCulture, out rotatorHomedStatus) == false)
                         {
+                        	if(rotatorHomedStatus == (int)HomeStatus.ATHOME && rotatorSeekState == (int)Seeks.HOMING_NONE)
+                        		isHoming = false;
                             LogMessage("Rotator Get", "Homed Status Invalid ({0})", value);
                         }
                         break;
@@ -738,6 +754,10 @@ namespace ASCOM.NexDome
                     case SEEKSTATE_GET:
                         if (int.TryParse(value, numberStyle, sourceCulture, out rotatorSeekState) == false)
                         {
+	                         if(rotatorSeekState == (int)Seeks.HOMING_NONE) {
+	                         	isHoming = false;
+	                         }
+
                             LogMessage("Rotator Get", "Seek Status Invalid ({0})", value);
                         }
                         break;
@@ -820,21 +840,21 @@ namespace ASCOM.NexDome
                         {
                             canSetShutter = true;
                             tl.LogMessage("Enabling shutter", canSetShutter.ToString());
-                            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                             SendSerial(STATE_SHUTTER_GET);;
-                            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                             SendSerial(VOLTS_SHUTTER_CMD);
-                            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                             SendSerial(POSITION_SHUTTER_GET);
-                            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                             SendSerial(STEPSPER_SHUTTER_CMD);
-                            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                             SendSerial(SPEED_SHUTTER_CMD);
-                            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                             SendSerial(ACCELERATION_SHUTTER_CMD);
-                            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                             SendSerial(REVERSED_SHUTTER_CMD);
-                            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                             SendSerial(LOWCLOSE_SHUTTER_CMD);
                             WriteProfile(); // save the fact that we have a shutter.
                         }
@@ -901,7 +921,7 @@ namespace ASCOM.NexDome
             LogMessage("Rotator Get", "Setup Info");
             SendSerial(HELLO_CMD);		// send hello to shutter, if it's present it'll reply
             SendSerial(VERSION_ROTATOR_GET);
-            Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
             SendSerial(VERSION_SHUTTER_GET);    // if the shuuter is connected we'll get a response.
             SendSerial(VOLTS_ROTATOR_CMD);
             SendSerial(STEPSPER_ROTATOR_CMD);
@@ -920,26 +940,26 @@ namespace ASCOM.NexDome
             if (canSetShutter == true)
             {
                 LogMessage("Shutter Get", "Setup Info");
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(STATE_SHUTTER_GET);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(VERSION_SHUTTER_GET);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(VOLTS_SHUTTER_CMD);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(POSITION_SHUTTER_GET);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(STEPSPER_SHUTTER_CMD);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(SPEED_SHUTTER_CMD);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(ACCELERATION_SHUTTER_CMD);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(REVERSED_SHUTTER_CMD);
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(LOWCLOSE_SHUTTER_CMD);
             }
-            
+
         }
         #endregion
 
@@ -1165,6 +1185,9 @@ namespace ASCOM.NexDome
         public void AbortSlew()
         {
             SendSerial(ABORT_MOVE_CMD);
+            isHoming = false;
+            isSlewing = false;
+            isMovingShutter = false;
             tl.LogMessage("Movement", "Aborted");
         }
 
@@ -1172,8 +1195,9 @@ namespace ASCOM.NexDome
         {
             if (canSetShutter == true)
             {
-                Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                 SendSerial(CLOSE_SHUTTER_CMD);
+                isMovingShutter = true;
                 tl.LogMessage("Close Shutter", "Started");
             }
             else
@@ -1188,6 +1212,7 @@ namespace ASCOM.NexDome
             if (canFindHome == true)
             {
                 SendSerial(HOME_ROTATOR_CMD);
+                isHoming = true;
                 tl.LogMessage("Rotator", "Find Home");
             }
             else
@@ -1211,8 +1236,9 @@ namespace ASCOM.NexDome
                 }
                 else
                 {
-                    Thread.Sleep(INTER_COMMAND_PAUSE_MS);
+
                     SendSerial(OPEN_SHUTTER_CMD);
+                    isMovingShutter = true;
                     tl.LogMessage("Open Shutter", "Started");
                 }
             }
@@ -1228,6 +1254,7 @@ namespace ASCOM.NexDome
             if (canPark == true)
             {
                 SendSerial(GOTO_ROTATOR_CMD + rotatorParkAz.ToString(sourceCulture));
+                isSlewing = true;
                 tl.LogMessage("Rotator", "Go to Park");
             }
             else
@@ -1264,6 +1291,7 @@ namespace ASCOM.NexDome
                 if (rotatorVoltage > rotatorCutoff)
                 {
                     SendSerial(GOTO_ROTATOR_CMD + Azimuth.ToString(sourceCulture));
+                    isSlewing = true;
                     LogMessage("Rotator", "Slew from ({0:0.00}) to ({1:0.00})", azimuth, Azimuth);
                 }
                 else

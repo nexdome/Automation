@@ -191,8 +191,6 @@ private:
 	unsigned long nextPeriodicReadingLapse = 10;
 
 	// Utility
-	long		GetPositionalDistance(const long, const long);
-
 	StopWatch _buttonCheckTimer;
 	unsigned long nextCheckButtonLapse = 10;
 	void		ButtonCheck();
@@ -699,24 +697,6 @@ float RotatorClass::GetAngularDistance(const float fromAngle, const float toAngl
 	return delta;
 }
 
-long RotatorClass::GetPositionalDistance(const long fromPosition, const long toPosition)
-{
-	long delta;
-
-	delta = toPosition - fromPosition;
-	if (delta == 0)
-		return 0; //  we are already there
-
-	if (delta > _stepsPerRotation / 2)
-		delta -= _stepsPerRotation;
-
-	if (delta < -_stepsPerRotation / 2)
-		delta += _stepsPerRotation;
-
-	delta = delta - int(delta) % STEP_TYPE;
-	return delta;
-
-}
 
 void RotatorClass::SetAzimuth(const float newHeading)
 {
