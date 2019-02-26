@@ -71,6 +71,7 @@ const char STATE_SHUTTER_GET		= 'M'; // Get shutter state
 const char STEPSPER_SHUTTER_CMD		= 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET		= 'V'; // Get version string
 const char VOLTS_SHUTTER_CMD		= 'K'; // Get volts and get/set cutoff
+const char SHUTTER_PING					= 'L'; // use to reset watchdong timer.
 const char VOLTSCLOSE_SHUTTER_CMD	= 'B';
 const char INIT_XBEE						= 'x'; // force a ConfigXBee
 
@@ -87,7 +88,6 @@ bool isRaining = false;
 
 // StopWatch nextUpdateTimer;
 // StopWatch nextStepTimer;
-StopWatch watchdogTimer;
 
 // unsigned long updateInterval;
 unsigned long stepInterval;
@@ -449,6 +449,11 @@ void ProcessMessages(String buffer)
 			XbeeStarted = false;
 			configStep = 0;
 			wirelessMessage = String(INIT_XBEE);
+			break;
+
+		case SHUTTER_PING:
+			wirelessMessage = String(SHUTTER_PING);
+			watchdogTimer.reset();
 			break;
 
 		default:

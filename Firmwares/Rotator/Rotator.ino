@@ -54,6 +54,7 @@ bool XbeeStarted = false, sentHello = false, isConfiguringWireless = false, gotH
 int configStep;
 int sleepMode = 0, sleepPeriod = 300, sleepDelay = 30000;
 String ATString="";
+unsigned int pingInterval = 30000; // 30 seconds
 
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
@@ -67,6 +68,7 @@ bool SentHello = false;
 // the status changes (hence the lastIsRaining).
 
 StopWatch Rainchecktimer;
+StopWatch PingTimer;
 
 bool bIsRaining = false;
 bool bShutterPresnt = false;
@@ -138,6 +140,7 @@ const char STATE_SHUTTER_GET			= 'M'; // Get shutter state
 const char STEPSPER_SHUTTER_CMD			= 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET			= 'V'; // Get version string
 const char VOLTS_SHUTTER_CMD			= 'K'; // Get volts and get/set cutoff
+const char SHUTTER_PING					= 'L'; // use to reset watchdong timer.
 const char VOLTSCLOSE_SHUTTER_CMD			= 'B'; // Get/Set if shutter closes and rotator homes on shutter low voltage
 #pragma endregion
 
@@ -156,6 +159,7 @@ void setup()
 	Wireless.begin(9600);
 	// delay(25000);
 	Rainchecktimer.reset();
+	PingTimer.reset();
 	DBPrint("Ready");
 }
 
@@ -179,6 +183,7 @@ void loop()
 
 	Rotator.Run();
 	CheckForCommands();
+	PingShutter();
 	CheckForRain();
 	if(gotHelloFromShutter) {
 		requestShutterData();
@@ -311,6 +316,16 @@ void CheckForRain()
 		}
 		Rainchecktimer.reset();
 	}
+}
+
+
+void PingShutter()
+{
+	if(PingTimer.elapsed() >= pingInterval) {
+		Wireless.print(String(SHUTTER_PING )+ "#");
+		ReceiveWireless();
+		PingTimer.reset();
+		}
 }
 
 //<SUMMARY>Send debug comment to shutter</SUMMARY>
@@ -862,6 +877,10 @@ void ProcessWireless()
 
 		case WATCHDOG_INTERVAL_SET:
 			RemoteShutter.watchdogInterval = value;
+			break;
+
+		case SHUTTER_PING:
+			bShutterPresnt = true;
 			break;
 
 		default:

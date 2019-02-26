@@ -87,6 +87,7 @@ AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_P
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, ERROR };
 ShutterStates	shutterState = ERROR;
 
+StopWatch watchdogTimer;
 
 #pragma region Shutter Header
 class ShutterClass
