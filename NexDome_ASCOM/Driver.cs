@@ -18,7 +18,8 @@
 // Date			Who	Vers	Description
 // -----------	---	-----	-------------------------------------------------------
 // 06-05-2018	PDM	6.3.2	Initial edit, created from ASCOM driver template
-// 12-31-2018	PDM	2.1	Renaming PDM -> NexDome (not sure what the 6.3.2 above is about but the previous version was 0.5.2.3)
+// 12-31-2018	RP	   2.1	Renaming PDM -> NexDome (not sure what the 6.3.2 above is about but the previous version was 0.5.2.3)
+// 12-31-2018	RP+RC	2.11	Fixed some coms issues, make it less chatty.
 // --------------------------------------------------------------------------------
 //
 

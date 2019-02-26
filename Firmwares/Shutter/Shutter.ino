@@ -50,7 +50,7 @@ String serialBuffer;
 #define Wireless Serial1
 String wirelessBuffer;
 
-const String version = "2.1";
+const String version = "2.11";
 
 #pragma endregion
 
@@ -453,6 +453,7 @@ void ProcessMessages(String buffer)
 
 		case SHUTTER_PING:
 			wirelessMessage = String(SHUTTER_PING);
+			DBPrintln("Got Ping");
 			watchdogTimer.reset();
 			break;
 

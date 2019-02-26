@@ -33,7 +33,7 @@
 RotatorClass Rotator ;
 RemoteShutterClass RemoteShutter;
 
-#define VERSION "2.1"
+#define VERSION "2.11"
 
 #define Computer Serial
 String computerBuffer;
