@@ -504,6 +504,7 @@ namespace ASCOM.NexDome
             if(isHoming) {
 					SendSerial(HOMED_ROTATOR_STATUS);
 					SendSerial(SEEKSTATE_GET);
+	            SendSerial(SLEW_ROTATOR_STATUS);
             }
 
             if(isSlewing)
