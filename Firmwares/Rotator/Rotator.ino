@@ -59,7 +59,7 @@ bool XbeeStarted = false, sentHello = false, isConfiguringWireless = false, gotH
 int configStep;
 int sleepMode = 0, sleepPeriod = 300, sleepDelay = 30000;
 String ATString="";
-unsigned int pingInterval = 30000; // 30 seconds
+static const unsigned long pingInterval = 30000; // 30 seconds, can't be changed
 
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
@@ -162,7 +162,6 @@ void setup()
 {
 	Computer.begin(9600);
 	Wireless.begin(9600);
-	// delay(25000);
 	Rainchecktimer.reset();
 	PingTimer.reset();
 	DBPrint("Ready");
