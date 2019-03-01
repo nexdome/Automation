@@ -44,6 +44,9 @@
 #include <EEPROM.h>
 #include "ShutterClass.h"
 
+#define ERR_NO_DATA	-1
+
+
 #define Computer Serial
 String serialBuffer;
 
@@ -274,7 +277,7 @@ void ReceiveWireless()
 				wirelessBuffer = "";
 			}
 		}
-		else {
+		else if (character != ERR_NO_DATA) {
 			wirelessBuffer += String(character);
 		}
 	} // end while

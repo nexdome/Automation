@@ -33,6 +33,11 @@
 RotatorClass Rotator ;
 RemoteShutterClass RemoteShutter;
 
+#define MAX_TIMEOUT 10
+#define ERR_NO_DATA	-1
+#define OK	0
+
+
 #define VERSION "2.11"
 
 #define Computer Serial
@@ -804,7 +809,7 @@ int ReceiveWireless()
 	// read the response
 	do {
 		wirelessCharacter = Wireless.read();
-		if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter != '#' && wirelessCharacter != -1) {
+		if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter != '#') {
 			wirelessBuffer += String(wirelessCharacter);
 		}
 	} while (wirelessCharacter != '#');
