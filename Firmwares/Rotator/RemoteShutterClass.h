@@ -51,16 +51,11 @@ public:
 	String	version = "";
 	String	volts = "";
 	String 	voltsClose = "";
-	String	watchdogInterval = "";
+	String	watchdogInterval = "90"; // set proper default.. just in case.
 	RemoteShutterClass();
-	// void SetState(int);
 };
 
 RemoteShutterClass::RemoteShutterClass()
 {
 
 }
-//void RemoteShutterClass::SetState(int newState)
-//{
-//	state = (ShutterStates)newState;
-//}
