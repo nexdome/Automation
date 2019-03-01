@@ -4,22 +4,22 @@
 //
 // ASCOM Dome driver for NexDome
 //
-// Description:	Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-//				nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-//				erat, sed diam voluptua. At vero eos et accusam et justo duo
-//				dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-//				sanctus est Lorem ipsum dolor sit amet.
+// Description: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+//              nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+//              erat, sed diam voluptua. At vero eos et accusam et justo duo
+//              dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+//              sanctus est Lorem ipsum dolor sit amet.
 //
-// Implements:	ASCOM Dome interface version: 2
-// Author:		Pat Meloy
+// Implements:  ASCOM Dome interface version: 2
+// Author:      Pat Meloy
 //
 // Edit Log:
 //
-// Date			Who	Vers	Description
-// -----------	---	-----	-------------------------------------------------------
-// 06-05-2018	PDM	6.3.2	Initial edit, created from ASCOM driver template
-// 12-31-2018	RP	   2.1	Renaming PDM -> NexDome (not sure what the 6.3.2 above is about but the previous version was 0.5.2.3)
-// 12-31-2018	RP+RC	2.11	Fixed some coms issues, make it less chatty.
+// Date         Who Vers    Description
+// -----------  --- -----   -------------------------------------------------------
+// 06-05-2018   PDM 6.3.2   Initial edit, created from ASCOM driver template
+// 12-31-2018   RP     2.1  Renaming PDM -> NexDome (not sure what the 6.3.2 above is about but the previous version was 0.5.2.3)
+// 12-31-2018   RP+RC   2.11    Fixed some coms issues, make it less chatty.
 // --------------------------------------------------------------------------------
 //
 
@@ -502,14 +502,15 @@ namespace ASCOM.NexDome
         {
             SendSerial(POSITION_ROTATOR_CMD);
             if(isHoming) {
-					SendSerial(HOMED_ROTATOR_STATUS);
-					SendSerial(SEEKSTATE_GET);
-	            SendSerial(SLEW_ROTATOR_STATUS);
+                SendSerial(HOMED_ROTATOR_STATUS);
+                SendSerial(SEEKSTATE_GET);
+                SendSerial(SLEW_ROTATOR_STATUS);
             }
 
-            if(isSlewing)
-	            SendSerial(SLEW_ROTATOR_STATUS);
-
+            if(isSlewing) {
+                SendSerial(SLEW_ROTATOR_STATUS);
+                SendSerial(HOMED_ROTATOR_STATUS);
+            }
             if (canSetShutter && isMovingShutter) {
                 SendSerial(POSITION_SHUTTER_GET);
                 SendSerial(STATE_SHUTTER_GET);
@@ -602,8 +603,8 @@ namespace ASCOM.NexDome
                     case HOMED_ROTATOR_STATUS:
                         if (int.TryParse(value, numberStyle, sourceCulture, out rotatorHomedStatus) == false)
                         {
-                        	if(rotatorHomedStatus == (int)HomeStatus.ATHOME && rotatorSeekState == (int)Seeks.HOMING_NONE)
-                        		isHoming = false;
+                            if(rotatorHomedStatus == (int)HomeStatus.ATHOME && rotatorSeekState == (int)Seeks.HOMING_NONE)
+                                isHoming = false;
                             LogMessage("Rotator Get", "Homed Status Invalid ({0})", value);
                         }
                         break;
@@ -756,11 +757,29 @@ namespace ASCOM.NexDome
                     case SEEKSTATE_GET:
                         if (int.TryParse(value, numberStyle, sourceCulture, out rotatorSeekState) == false)
                         {
-	                         if(rotatorSeekState == (int)Seeks.HOMING_NONE) {
-	                         	isHoming = false;
-	                         }
+                            switch((Seeks)rotatorSeekState) {
+                                    case Seeks.HOMING_NONE:
+                                        isHoming = false;
+                                        break;
 
-                            LogMessage("Rotator Get", "Seek Status Invalid ({0})", value);
+                                    case Seeks.HOMING_HOME:
+                                        isHoming = true;
+                                        break;
+
+                                    case Seeks.CALIBRATION_MOVEOFF:
+                                        isHoming = false;
+                                        isSlewing = true;
+                                        break;
+
+                                    case Seeks.CALIBRATION_MEASURE:
+                                        isHoming = false;
+                                        break;
+
+                                    default :
+                                        LogMessage("Rotator Get", "Seek Status Invalid ({0})", value);
+                                        isHoming = false;
+                                        break;
+                                }
                         }
                         break;
 
@@ -921,7 +940,7 @@ namespace ASCOM.NexDome
         internal void GetSetupInfo()
         {
             LogMessage("Rotator Get", "Setup Info");
-            SendSerial(HELLO_CMD);		// send hello to shutter, if it's present it'll reply
+            SendSerial(HELLO_CMD);      // send hello to shutter, if it's present it'll reply
             SendSerial(VERSION_ROTATOR_GET);
 
             SendSerial(VERSION_SHUTTER_GET);    // if the shuuter is connected we'll get a response.
