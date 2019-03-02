@@ -1,7 +1,9 @@
 /*
-* PDM NexDome Rotation kit firmware. NOT compatible with original NexDome ASCOM driver.
+* NexDome Shutter kit firmware. NOT compatible with original NexDome ASCOM driver or Rotation kit firmware.
 *
 * Copyright (c) 2018 Patrick Meloy
+* Copyright (c) 2019 Rodolphe Pineau, Ron Crouch, NexDome
+*
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 *  files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy,
 *  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
@@ -16,6 +18,7 @@
 *  Inspired by the original official NexDome firmware by grozzie2 but completely incompatible.
 *  https://github.com/grozzie2/NexDome
 */
+
 #pragma once
 
 #pragma region Defines

@@ -1,7 +1,9 @@
 /*
-* PDM NexDome Shutter kit firmware. NOT compatible with original NexDome ASCOM driver or Rotation kit firmware.
+* NexDome Shutter kit firmware. NOT compatible with original NexDome ASCOM driver or Rotation kit firmware.
 *
 * Copyright (c) 2018 Patrick Meloy
+* Copyright (c) 2019 Rodolphe Pineau, Ron Crouch, NexDome
+*
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 *  files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy,
 *  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
@@ -17,27 +19,9 @@
 *  https://github.com/grozzie2/NexDome
 */
 
-
 /*
 ** Basic operation
-** Communications between the rotator and shutter are generally kept at a minimum with the only constant communication being periodic
-** rain sensor checks. The driver talks to the rotator and the rotator will pass on any shutter commands to the shutter over wireless.
-** Changing shutter settings from the driver usually initiates a one-way message to the shutter with the new setting. Since this has
-** to pass through the rotator the rotator will store the value and the shutter doesn't have to respond to the rotator.
-**
-** When the shutter gets a movement command it will start updating the rotator once per second until the move is complete. That way the
-** rotator doesn't have to ask for the values, cutting down on the number of messages going back and forth.
-**
-** On startup the shutter sends a Hello message over wireless. If the rotator is present it will ask the shutter for all the settings.
-**
-** If the rotator is powered up after the shutter then the rotator will send out a Hello message and if the shutter is powered up they
-** will initiate the data exchange.
-**
-** One of the drawbacks of a "dumb" stepper driver is that if the Arduino is doing something else the stepper is not updated causing
-** it to try and stop during a move. This doesn't last long but it does create a noticable "tick" sound. Each time it ticks there is
-** extra stress on the motor and gearing so reducing the ticking by not having to receive lots of update requests as well as sending
-** them is a good thing.
-**
+// TBD
 */
 
 #include <AccelStepper.h>
@@ -89,23 +73,16 @@ String ATString = "";
 bool SentHello = false, XbeeStarted = false;
 bool isRaining = false;
 
-// StopWatch nextUpdateTimer;
-// StopWatch nextStepTimer;
-
-// unsigned long updateInterval;
 unsigned long stepInterval;
 
-// StopWatch nextVoltageUpdateTimer;
 unsigned long voltUpdateInterval = 5000;
 
-// StopWatch nextRainCheckTimer;
 bool doFinalUpdate = false;
 
 void setup()
 {
 	Computer.begin(9600);
 	Wireless.begin(9600);
-	// updateInterval = 1000;
 	stepInterval = 100;
 	watchdogTimer.reset();
 }
@@ -130,76 +107,19 @@ void loop()
 	}
 
 	if(watchdogTimer.elapsed() >= Shutter.watchdogInterval) {
+			DBPrintln("watchdogTimer triggered.. closing");
+			DBPrintln("watchdogTimer.elapsed() = " + String(watchdogTimer.elapsed()));
+			DBPrintln("Shutter.watchdogInterval = " + String(Shutter.watchdogInterval));
 		// we lost communication with the rotator.. close everything.
-		if (Shutter.GetState() != CLOSED && Shutter.GetState() != CLOSING)
+		if (Shutter.GetState() != CLOSED && Shutter.GetState() != CLOSING) {
 			Shutter.Close();
+			}
 	}
 
 	Shutter.DoButtons();
 	Shutter.Run();
 }
 
-///<SUMMARY>
-///Send all data to rotator every second but stagger the messages over that second.
-///</SUMMARY>
-/* Run through this once per second when the stepper is (or was) running.
-** Shutter.sendUpdates is set to true when a movement command is received and set to false
-** in Shutter.run() if the motor is stopped.
-** It's entirely possible for the motor to stop part way through the update steps which would mean the next time around
-** no updates would be sent even though the data is different from what was already sent to the rotator. To prevent this
-** the sendUpdates state is stored at the start of the update steps and checked at the end. If they are different then
-** doFinalUpdate is set to true so the update cycle will run one final time even though the motor is stopped.
-*/
-
-/*
-void UpdateRotator()
-{
-	static bool sentState = false, sentPosition = false, runningAtaStart = false;
-
-	runningAtaStart = Shutter.sendUpdates; // Store motion state to comparison at end
-	if(nextVoltageUpdateTimer.elapsed() >= voltUpdateInterval) {
-		Wireless.print(VOLTS_SHUTTER_CMD + Shutter.GetVoltString() + "#");
-		nextVoltageUpdateTimer.reset();
-	}
-
-	if(nextStepTimer.elapsed() < stepInterval) {
-		return;
-	}
-
-	if (!sentState) {
-		Wireless.print(String(STATE_SHUTTER_GET) + String(Shutter.GetState()) + "#");
-		sentState = true;
-		nextStepTimer.reset();
-		return;
-	}
-
-	//TODO: Not ready yet - when handbox is done finish this up
-	//if (!sentElevation) {
-	//	Wireless.print(String(ELEVATION_SHUTTER_CMD) + String(Shutter.GetElevation()) + "#");
-	//	sentElevation = true;
-	// nextStepTimer.reset()
-	//	return;
-	//}
-
-	if (!sentPosition) {
-		Wireless.print(String(POSITION_SHUTTER_GET) + String(Shutter.GetPosition()) + "#");
-		sentPosition = true;
-		nextStepTimer.reset();
-		return;
-	}
-
-	nextUpdateTimer.reset();
-
-	sentState = sentPosition = false; // Reset the bools for the next cycle
-	Shutter.sendUpdates = false;
-	if (runningAtaStart != Shutter.sendUpdates) { // See if motor stopped after update steps started
-		doFinalUpdate = true; // Motor stopped after starting the update steps so do one more update to catch those up.
-	}
-	else {
-		doFinalUpdate = false;
-	}
-}
-*/
 
 #pragma region XBeeRoutines
 void StartWirelessConfig()
@@ -215,8 +135,6 @@ void StartWirelessConfig()
 inline void ConfigXBee(String result)
 {
 	if (configStep == 0) {
-		// ATString = "ATCE0,ID7734,AP0,SM0,RO0,WR,CN";
-		//  CE0 for end device, shutter MY is 1
 		ATString = "ATCE0,ID7734,CH0C,MY1,DH0,DL0,AP0,SM0,BD3,WR,CN";
 		DBPrintln("AT String " + ATString);
 		Wireless.println(ATString);
@@ -298,7 +216,7 @@ void ProcessMessages(String buffer)
 		return;
 	}
 
-	command = buffer.charAt(0); // If "H" the second letter says what it's from. We only care if it's "R", the rotator.
+	command = buffer.charAt(0);
 	value = buffer.substring(1); // Payload if the command has data.
 	DBPrintln("<<< Command:" + String(command) + " Value:" + value);
 
@@ -314,14 +232,12 @@ void ProcessMessages(String buffer)
 			break;
 
 		case ABORT_CMD:
-			// Rotator update will be through UpdateRotator
 			DBPrintln("STOP!");
 			Shutter.Stop();
 			wirelessMessage = String(ABORT_CMD);
 			break;
 
 		case CLOSE_SHUTTER_CMD:
-			// Rotator update will be through UpdateRotator
 			DBPrintln("Close shutter");
 			if (Shutter.GetState() != CLOSED) {
 				Shutter.Close();
@@ -336,7 +252,6 @@ void ProcessMessages(String buffer)
 			break;
 
 		case OPEN_SHUTTER_CMD:
-			// Rotator update will be through UpdateRotator
 			DBPrintln("Received Open Shutter Command");
 			if (isRaining) {
 				wirelessMessage = "OR"; // (O)pen command (R)ain cancel
@@ -353,7 +268,6 @@ void ProcessMessages(String buffer)
 			break;
 
 		case POSITION_SHUTTER_GET:
-			 //Rotator update will be through UpdateRotator
 			wirelessMessage = String(POSITION_SHUTTER_GET) + String(Shutter.GetPosition());
 			DBPrintln(wirelessMessage);
 			break;

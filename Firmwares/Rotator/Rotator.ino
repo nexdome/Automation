@@ -1,7 +1,9 @@
 /*
-* PDM NexDome Rotation kit firmware. NOT compatible with original NexDome ASCOM driver.
+* NexDome Shutter kit firmware. NOT compatible with original NexDome ASCOM driver or Rotation kit firmware.
 *
 * Copyright (c) 2018 Patrick Meloy
+* Copyright (c) 2019 Rodolphe Pineau, Ron Crouch, NexDome
+*
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 *  files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy,
 *  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
@@ -24,7 +26,6 @@
 #include <AccelStepper.h>
 
 //todo: Implement low voltage safety
-//todo: Make debug prints show up in ASCOM "Traffic" form?
 // Decide on a "comment" char to start all debug printing with so
 // ASCOM definately won't be affected (all messages validated anyway but
 // that'll stop mistaken "Invalid" messages.
@@ -50,7 +51,7 @@ String wirelessBuffer;
 
 #pragma region Declarations and Variables
 
-// Flag to doe XBee startup on first boot in loop(). Could do in setup but
+// Flag to do XBee startup on first boot in loop(). Could do in setup but
 // serial may not be ready so debugging prints won't show. Also used
 // to make sure the XBee has started and configured itself before
 // trying to send any wireless messages.
@@ -66,11 +67,7 @@ static const unsigned long pingInterval = 30000; // 30 seconds, can't be changed
 // the shutter will send a hello when it's booted up.
 bool SentHello = false;
 
-// Period between checks for rain. Sensor pin pulled high and active low so if nothing
-// is connected it never reports rain. The value has been flakey so I've disabled for now.
-// TODO: Fix rain sensor readings.
-// Status is checked periodically (see Rotator.RainCheckInterval()) but only sent when
-// the status changes (hence the lastIsRaining).
+// Timer to periodically checks for rain and shutter ping.
 
 StopWatch Rainchecktimer;
 StopWatch PingTimer;
@@ -80,30 +77,8 @@ bool bShutterPresnt = false;
 #pragma endregion
 
 #pragma region command constants
-/* Shutter talks asyncronously so any immediate return shows the old
-// value since only the Setup form changes the settings and it has to close
-// to do so, that doesn't matter. Once the Setup dialog OK is received,
-// Grab all the settings from the Shutter and store in RemoteShutter so
-// next time the Setup form is loaded it has the new values.
-// Shutter is usually uppercase of rotator version.
-// Name order is weird just because auto-complete is easier this way.
-// had to use char because switch{} can't handle strings.
-//
-// All responses are preceeded by the command char and while it is needed by
-// the shutter, ASCOM talks synchronously and actually has to dispose of that
-// first character. Leaving it in for now since it's easier to read when just
-// using a serial terminal to talk to the rotator. Plus who knows what other
-// programs people might write that may use async comms.
-//
-// Originally tried to make the letters make sense but there are too many. May
-// just re-do to go in alphabetical order since I use the constant labels anyway.
-// TODO: Alphabetize the characters if I get motivated enough.
-// NOTE: Used labels because it's nearly impossible to remember all the character
-// meanings. Plus this lets me change the letters without changing code. Have
-// to make the same changes in the shutter and ASCOM but cut & paste makes that easy.
-*/
+
 const String DEBUG_STATE_CMD			= "%"; // Get/Set debugging messages 0=off
-const String WIRELESS_DEBUG_COMMENT		= "B"; // Handy debug messages sent to Shutter which can serial print. Used directly, not in case statements
 const char ACCELERATION_ROTATOR_CMD		= 'e'; // Get/Set stepper acceleration
 const char ABORT_MOVE_CMD				= 'a'; // Tell everything to STOP!
 const char CALIBRATE_ROTATOR_CMD		= 'c'; // Calibrate the dome
@@ -199,7 +174,6 @@ void loop()
 
 #pragma region Periodic and Helper functions
 
-//<SUMMARY>Start configuration routine then send Hello broadcast</SUMMARY>
 void StartWirelessConfig()
 {
 	Computer.println("Xbee configuration started");
@@ -215,8 +189,6 @@ void ConfigXBee(String result)
 	DBPrint("[ConfigXBee]");
 
 	if (configStep == 0) {
-		// ATString = "ATCE1,ID7734,AP0,SM0,RO0,WR,CN";
-		// CE1 for coordinator, rotation MY is 0,
 		ATString = "ATCE1,ID7734,CH0C,MY0,DH0,DLFFFF,AP0,SM0,BD3,WR,CN";
 		Wireless.println(ATString);
 		DBPrint("Sending : " + ATString);
@@ -332,18 +304,10 @@ void PingShutter()
 		}
 }
 
-//<SUMMARY>Send debug comment to shutter</SUMMARY>
-//Handy when rotator is connected to something else so you
-//can't print to serial.
-// TODO: Get rid of this once ASCOM can handle debug comments
-void WirelessComment(String comment)
-{
-	Wireless.print(WIRELESS_DEBUG_COMMENT + comment + "#");
-}
 #pragma endregion
 
 #pragma region Serial handling
-// All ASCOM comms are terminated with # but left if the \r\n for compatibility
+// All ASCOM comms are terminated with # but left if the \r\n for XBee config
 // with other programs.
 void ReceiveComputer()
 {
@@ -378,7 +342,8 @@ void ProcessSerialCommand()
 	value = computerBuffer.substring(1);
 	// payload has data (better one comparison here than many in code. Even though
 	// it's still executed just once per loop.
-	if (value.length() > 0) hasValue = true;
+	if (value.length() > 0)
+		hasValue = true;
 
 	serialMessage = "";
 	wirelessMessage = "";
