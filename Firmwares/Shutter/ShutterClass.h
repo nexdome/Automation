@@ -191,6 +191,7 @@ private:
 
 ShutterClass::ShutterClass()
 {
+	int sw1, sw2;
 	_adcConvert = 3.0 * (5.0 / 1023.0) * 100;
 	ReadEEProm();
 
@@ -215,20 +216,39 @@ ShutterClass::ShutterClass()
 	// reset all timers
 	_batteryCheckTimer.reset();
 
+	// read initial shutter state
+	sw1 = digitalRead(CLOSED_PIN);
+	sw2 = digitalRead(OPENED_PIN);
+
+	if(sw1 == 0 && sw2 == 0)
+		shutterState = ERROR;
+	else if (sw1 == 1 && sw2 == 0)
+		shutterState = CLOSED;
+	else if (sw1 == 0 && sw2 == 1)
+		shutterState = OPEN;
+
 }
 
 void ShutterClass::ClosedInterrupt()
 {
 	// debounce
-	if (digitalRead(CLOSED_PIN) == 0 && shutterState == CLOSING)
-		stepper.stop();
+	if (digitalRead(CLOSED_PIN) == 0) {
+		if(shutterState == CLOSING)
+			stepper.stop();
+		if(shutterState != OPENING)
+			shutterState = CLOSED;
+	}
 }
 
 void ShutterClass::OpenInterrupt()
 {
 	// debounce
-	if (digitalRead(OPENED_PIN) == 0 && shutterState == OPENING)
-		stepper.stop();
+	if (digitalRead(OPENED_PIN) == 0) {
+ 		if(shutterState == OPENING)
+ 			stepper.stop();
+		if(shutterState != CLOSING)
+			shutterState = OPEN;
+	}
 }
 
 // EEPROM
@@ -466,12 +486,14 @@ void ShutterClass::SetVoltsFromString(const String value)
 void ShutterClass::Open()
 {
 	shutterState = OPENING;
+	DBPrintln("shutterState = OPENING");
 	MoveRelative(_stepsPerStroke * 1.2);
 }
 
 void ShutterClass::Close()
 {
 	shutterState = CLOSING;
+	DBPrintln("shutterState = CLOSING");
 	MoveRelative(1 - _stepsPerStroke * 1.2);
 }
 
@@ -482,10 +504,12 @@ void ShutterClass::GotoPosition(const unsigned long newPos)
 
 	// Check if this actually changes position, then move if necessary.
 	if (newPos > currentPos) {
+	DBPrintln("shutterState = OPENING");
 		shutterState = OPENING;
 		doMove = true;
 	}
 	else if (newPos < currentPos) {
+	DBPrintln("shutterState = CLOSING");
 		shutterState = CLOSING;
 		doMove = true;
 	}
@@ -551,7 +575,7 @@ void ShutterClass::Run()
 			shutterState = CLOSED;
 			stepper.stop();
 			DBPrintln("Hit closed switch");
-
+			DBPrintln("shutterState = CLOSED");
 	}
 
 	if (digitalRead(OPENED_PIN) == 0 && shutterState != CLOSING && hitSwitch == false) {
@@ -559,6 +583,7 @@ void ShutterClass::Run()
 			shutterState = OPEN;
 			stepper.stop();
 			DBPrintln("Hit opened switch");
+			DBPrintln("shutterState = OPEN");
 	}
 
 	if (stepper.isRunning()) {
@@ -566,8 +591,10 @@ void ShutterClass::Run()
 		sendUpdates = true; // Set to false at the end of the rotator update steps. If running it'll get set back to true.
 	}
 
-	if (stepper.isRunning() == false && shutterState != CLOSED && shutterState != OPEN)
+	if (stepper.isRunning() == false && digitalRead(OPENED_PIN) != 0 && digitalRead(CLOSED_PIN) != 0) {
 		shutterState = ERROR;
+		DBPrintln("shutterState = ERROR");
+	}
 
 	if (_batteryCheckTimer.elapsed() >= _batteryCheckInterval && isConfiguringWireless == false) {
 		DBPrintln("Measuring Battery");
