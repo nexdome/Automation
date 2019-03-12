@@ -590,6 +590,10 @@ namespace ASCOM.NexDome
 
                         break;
 
+                 	  case GOTO_ROTATOR_CMD :
+                 	  		LogMessage("Rotator goto ack",  command + value);
+                 	  		break;
+
                     case HOMEAZ_ROTATOR_CMD:
                         if (double.TryParse(value, numberStyle, sourceCulture, out rotatorHomeAz) == true)
                         {
@@ -1312,6 +1316,7 @@ namespace ASCOM.NexDome
             {
                 if (rotatorVoltage > rotatorCutoff)
                 {
+                		LogMessage("Rotator", "Sending : " + GOTO_ROTATOR_CMD + Azimuth.ToString(sourceCulture));
                     SendSerial(GOTO_ROTATOR_CMD + Azimuth.ToString(sourceCulture));
                     isSlewing = true;
                     LogMessage("Rotator", "Slew from ({0:0.00}) to ({1:0.00})", azimuth, Azimuth);
