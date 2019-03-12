@@ -518,6 +518,7 @@ namespace ASCOM.NexDome
 
             if (slowUpdateCounter >= 30)  {
                 tl.LogMessage("Slow update", "Get");
+                SendSerial(STATE_SHUTTER_GET);
                 SendSerial(RAIN_ROTATOR_GET);
                 SendSerial(VOLTS_ROTATOR_CMD);
 
