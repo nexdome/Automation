@@ -717,6 +717,9 @@ void ProcessSerialCommand()
 			serialMessage = localString + RemoteShutter.watchdogInterval;
 			break;
 
+		case DEBUG_MSG_CMD:
+			break;
+
 	#pragma endregion
 
 		default:

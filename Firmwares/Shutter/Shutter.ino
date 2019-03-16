@@ -380,6 +380,7 @@ void ProcessMessages(String buffer)
 			if (value.length() > 0) {
 				DBPrintln(value);
 			}
+			wirelessMessage = String(DEBUG_MSG_CMD);
 			break;
 
 		default:
