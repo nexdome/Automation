@@ -37,8 +37,13 @@
 #define STEP_TYPE 8
 
 // #define DEBUG
+// #define DEBUG_W
 #ifdef DEBUG
-#define DBPrint(x) Serial.println(x)
+#ifdef DEBUG_W
+#define DBPrint(x) Wireless.println(String(DEBUG_MSG_CMD) + x + String("#"))
+#else
+#define DBPrint(x) Computer.println(x)
+#endif // DEBUG_W
 #else
 #define DBPrint(x)
 #endif // DEBUG

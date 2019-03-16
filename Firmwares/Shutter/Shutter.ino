@@ -42,6 +42,7 @@ const String version = "2.11";
 #pragma endregion
 
 #pragma region Command character constants
+const char DEBUG_MSG_CMD			= '*'; // start of a debug message
 const char ABORT_CMD				= 'a';
 const char ACCELERATION_SHUTTER_CMD = 'E'; // Get/Set stepper acceleration
 const char CLOSE_SHUTTER_CMD		= 'C'; // Close shutter
@@ -181,22 +182,23 @@ void ReceiveWireless()
 	// read as much as possible in one call to ReceiveWireless()
 	while(Wireless.available()) {
 		character = Wireless.read();
-
-		if (character == '\r' || character == '#') {
-			if (wirelessBuffer.length() > 0) {
-				if (Shutter.isConfiguringWireless) {
-					DBPrint("Configuring XBee");
-					ConfigXBee(wirelessBuffer);
+		if (character != ERR_NO_DATA) {
+			watchdogTimer.reset(); // communication are working
+			if (character == '\r' || character == '#') {
+				if (wirelessBuffer.length() > 0) {
+					if (Shutter.isConfiguringWireless) {
+						DBPrint("Configuring XBee");
+						ConfigXBee(wirelessBuffer);
+					}
+					else {
+						ProcessMessages(wirelessBuffer);
+					}
+					wirelessBuffer = "";
 				}
-				else {
-					watchdogTimer.reset(); // communication are working
-					ProcessMessages(wirelessBuffer);
-				}
-				wirelessBuffer = "";
 			}
-		}
-		else if (character != ERR_NO_DATA) {
-			wirelessBuffer += String(character);
+			else {
+				wirelessBuffer += String(character);
+			}
 		}
 	} // end while
 }
@@ -372,6 +374,12 @@ void ProcessMessages(String buffer)
 			wirelessMessage = String(SHUTTER_PING);
 			DBPrintln("Got Ping");
 			watchdogTimer.reset();
+			break;
+
+		case DEBUG_MSG_CMD:
+			if (value.length() > 0) {
+				DBPrintln(value);
+			}
 			break;
 
 		default:

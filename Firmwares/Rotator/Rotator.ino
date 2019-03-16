@@ -78,7 +78,7 @@ bool bShutterPresnt = false;
 
 #pragma region command constants
 
-const String DEBUG_STATE_CMD			= "%"; // Get/Set debugging messages 0=off
+const char DEBUG_MSG_CMD			= '*'; // start of a debug message sent to the Shutter Arduino.
 const char ACCELERATION_ROTATOR_CMD		= 'e'; // Get/Set stepper acceleration
 const char ABORT_MOVE_CMD				= 'a'; // Tell everything to STOP!
 const char CALIBRATE_ROTATOR_CMD		= 'c'; // Calibrate the dome
@@ -312,16 +312,17 @@ void PingShutter()
 void ReceiveComputer()
 {
 	char computerCharacter = Computer.read();
-
-	if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
-		// End of message
-		if (computerBuffer.length() > 0) {
-			ProcessSerialCommand();
-			computerBuffer = "";
+	if (computerCharacter != ERR_NO_DATA) {
+		if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
+			// End of message
+			if (computerBuffer.length() > 0) {
+				ProcessSerialCommand();
+				computerBuffer = "";
+			}
 		}
-	}
-	else {
-		computerBuffer += String(computerCharacter);
+		else {
+			computerBuffer += String(computerCharacter);
+		}
 	}
 }
 
@@ -750,7 +751,7 @@ int ReceiveWireless()
 		// read the response
 		do {
 			wirelessCharacter = Wireless.read();
-			if(wirelessCharacter != '\r' && wirelessCharacter != -1) {
+			if(wirelessCharacter != '\r' && wirelessCharacter != ERR_NO_DATA) {
 				wirelessBuffer += String(wirelessCharacter);
 			}
 		} while (wirelessCharacter != '\r');
@@ -786,7 +787,7 @@ int ReceiveWireless()
 
 void ProcessWireless()
 {
-	char command; // , localChar;
+	char command;
 	String value, wirelessMessage;
 
 	DBPrint("<<< Received: " + wirelessBuffer);
