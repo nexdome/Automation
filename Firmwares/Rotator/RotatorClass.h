@@ -82,7 +82,7 @@ AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
 
 #define VOLTAGE_MONITOR_PIN A0
 
-#define SIGNATURE				822 // convert to #define to save space
+#define SIGNATURE				2110 // convert to #define to save space
 #define EEPROM_LOCATION 	10
 #define STEPSFORROTATION	55100
 
