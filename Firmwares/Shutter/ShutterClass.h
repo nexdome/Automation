@@ -169,7 +169,7 @@ private:
 	float				_adcConvert;
 	uint16_t		_volts;
 	StopWatch 	_batteryCheckTimer;
-	uint64_t		_batteryCheckInterval = 0; // we want to check battery immedialtelly
+	unsigned long		_batteryCheckInterval = 0; // we want to check battery immedialtelly
 	uint16_t		_cutoffVolts = 1220;
 	byte			_voltsClose = 0;
 

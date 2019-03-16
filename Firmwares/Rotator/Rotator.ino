@@ -146,13 +146,13 @@ void loop()
 {
 
 	if (!XbeeStarted) {
-		if (!Rotator.radioIsConfigured && !isConfiguringWireless) {
+		if (!Rotator._radioIsConfigured && !isConfiguringWireless) {
 			DBPrint("Xbee reconfiguring");
 			StartWirelessConfig();
-			DBPrint("Rotator.radioIsConfigured : " + String(Rotator.radioIsConfigured));
+			DBPrint("Rotator._radioIsConfigured : " + String(Rotator._radioIsConfigured));
 			DBPrint("isConfiguringWireless : " + String(isConfiguringWireless));
 		}
-		else if (Rotator.radioIsConfigured) {
+		else if (Rotator._radioIsConfigured) {
 			XbeeStarted = true;
 			wirelessBuffer = "";
 			DBPrint("Radio configured");
@@ -197,7 +197,7 @@ void ConfigXBee(String result)
 
 	if (configStep > 9) {
 		isConfiguringWireless = false;
-		Rotator.radioIsConfigured = true;
+		Rotator._radioIsConfigured = true;
 		XbeeStarted = true;
 		Rotator.SaveToEEProm();
 		delay(10000);
@@ -331,7 +331,7 @@ void ProcessSerialCommand()
 	float localFloat;
 	char command; //, localChar;
 	String value, wirelessMessage;
-	int localInt;
+	unsigned long localULong;
 	String serialMessage, localString;
 	bool hasValue = false; //, localBool = false;
 	long localLong;
@@ -479,10 +479,8 @@ void ProcessSerialCommand()
 
 		case RAIN_ROTATOR_CMD:
 			if (hasValue) {
-				localInt = value.toInt();
-				if (localInt < 0)
-					localInt = 0;
-				Rotator.SetRainInterval(localInt);
+				localULong = (unsigned long)value.toInt();
+				Rotator.SetRainInterval(localULong);
 			}
 			serialMessage = String(RAIN_ROTATOR_CMD) + String(Rotator.GetRainCheckInterval());
 			break;
@@ -545,7 +543,7 @@ void ProcessSerialCommand()
 
 		case INIT_XBEE:
 			localString = String(INIT_XBEE);
-			Rotator.radioIsConfigured = false;
+			Rotator._radioIsConfigured = false;
 			isConfiguringWireless = false;
 			XbeeStarted = false;
 			configStep = 0;

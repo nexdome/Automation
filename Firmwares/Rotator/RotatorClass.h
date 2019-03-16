@@ -57,7 +57,7 @@ typedef struct RotatorConfiguration {
 	float		homeAzimuth;
 	float		parkAzimuth;
 	int			cutoffVolts;
-	unsigned int	rainCheckInterval;
+	unsigned long	rainCheckInterval;
 	bool		rainCheckTwice;
 	byte		rainAction;
 	bool		radioIsConfigured;
@@ -98,7 +98,7 @@ public:
 
 	RotatorClass();
 
-	bool		radioIsConfigured = false;
+	bool		_radioIsConfigured = false;
 	// Getters
 	bool		GetRainStatus();
 	int			GetLowVoltageCutoff();
@@ -111,7 +111,7 @@ public:
 	long		GetAcceleration();
 	long		GetStepsPerRotation();
 	byte		GetRainAction();
-	unsigned int			GetRainCheckInterval();
+	unsigned long			GetRainCheckInterval();
 	bool		GetRainCheckTwice();
 	bool		GetReversed();
 	float		GetAzimuth();
@@ -129,7 +129,7 @@ public:
 	void		SetAzimuth(const float);
 	void		SetParkAzimuth(const float);
 	void		SetStepsPerRotation(const long);
-	void		SetRainInterval(const uint16_t);
+	void		SetRainInterval(const unsigned long);
 	void		SetReversed(const bool reversed);
 	void		SetHomeAzimuth(const float);
 	void		SetRainAction(const byte);
@@ -155,7 +155,7 @@ public:
 private:
 
 
-	unsigned int	_rainCheckInterval; // in seconds, function  multiplies by 1000
+	unsigned long	_rainCheckInterval; // in seconds, function  multiplies by 1000
 	bool		_rainCheckTwice;
 	byte		_rainAction;
 
@@ -251,7 +251,7 @@ void RotatorClass::SaveToEEProm()
 	cfg.rainCheckInterval = _rainCheckInterval;
 	cfg.rainCheckTwice = _rainCheckTwice;
 	cfg.rainAction = _rainAction;
-	cfg.radioIsConfigured = radioIsConfigured;
+	cfg.radioIsConfigured = _radioIsConfigured;
 	EEPROM.put(EEPROM_LOCATION, cfg);
 
 }
@@ -281,7 +281,7 @@ bool RotatorClass::LoadFromEEProm()
 		_rainCheckInterval = cfg.rainCheckInterval;
 		_rainCheckTwice = cfg.rainCheckTwice;
 		_rainAction = cfg.rainAction;
-		radioIsConfigured = cfg.radioIsConfigured;
+		_radioIsConfigured = cfg.radioIsConfigured;
 	}
 
 	SetMaxSpeed(_maxSpeed);
@@ -303,7 +303,7 @@ void RotatorClass::SetDefaultConfig()
 	_rainCheckInterval = 30; // In seconds, function will x 10
 	_rainCheckTwice = false;
 	_rainAction = 0;
-	radioIsConfigured = false;
+	_radioIsConfigured = false;
 
 }
 
@@ -389,7 +389,7 @@ bool RotatorClass::GetRainStatus()
 	return isRaining;
 }
 
-inline void RotatorClass::SetRainInterval(const uint16_t interval)
+inline void RotatorClass::SetRainInterval(const unsigned long interval)
 {
 	_rainCheckInterval = interval;
 	SaveToEEProm();
@@ -470,7 +470,7 @@ inline byte RotatorClass::GetRainAction()
 	return _rainAction;
 }
 
-inline unsigned int RotatorClass::GetRainCheckInterval()
+inline unsigned long RotatorClass::GetRainCheckInterval()
 {
 	return _rainCheckInterval;
 }

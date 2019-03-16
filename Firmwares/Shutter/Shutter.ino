@@ -276,7 +276,7 @@ void ProcessMessages(String buffer)
 
 		case WATCHDOG_INTERVAL_SET:
 			if (value.length() > 0) {
-				Shutter.SetWatchdogInterval(value.toInt());
+				Shutter.SetWatchdogInterval((unsigned long)value.toInt());
 				DBPrintln("Watchdog interval set to " + value + "ms");
 			}
 			else {
