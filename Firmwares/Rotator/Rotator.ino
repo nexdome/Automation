@@ -1,7 +1,9 @@
 /*
-* PDM NexDome Rotation kit firmware. NOT compatible with original NexDome ASCOM driver.
+* NexDome Shutter kit firmware. NOT compatible with original NexDome ASCOM driver or Rotation kit firmware.
 *
 * Copyright (c) 2018 Patrick Meloy
+* Copyright (c) 2019 Rodolphe Pineau, Ron Crouch, NexDome
+*
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 *  files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy,
 *  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
@@ -24,7 +26,6 @@
 #include <AccelStepper.h>
 
 //todo: Implement low voltage safety
-//todo: Make debug prints show up in ASCOM "Traffic" form?
 // Decide on a "comment" char to start all debug printing with so
 // ASCOM definately won't be affected (all messages validated anyway but
 // that'll stop mistaken "Invalid" messages.
@@ -33,7 +34,12 @@
 RotatorClass Rotator ;
 RemoteShutterClass RemoteShutter;
 
-#define VERSION "2.1"
+#define MAX_TIMEOUT 10
+#define ERR_NO_DATA	-1
+#define OK	0
+
+
+#define VERSION "2.11"
 
 #define Computer Serial
 String computerBuffer;
@@ -45,7 +51,7 @@ String wirelessBuffer;
 
 #pragma region Declarations and Variables
 
-// Flag to doe XBee startup on first boot in loop(). Could do in setup but
+// Flag to do XBee startup on first boot in loop(). Could do in setup but
 // serial may not be ready so debugging prints won't show. Also used
 // to make sure the XBee has started and configured itself before
 // trying to send any wireless messages.
@@ -54,49 +60,25 @@ bool XbeeStarted = false, sentHello = false, isConfiguringWireless = false, gotH
 int configStep;
 int sleepMode = 0, sleepPeriod = 300, sleepDelay = 30000;
 String ATString="";
+static const unsigned long pingInterval = 30000; // 30 seconds, can't be changed
 
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it's booted up.
 bool SentHello = false;
 
-// Period between checks for rain. Sensor pin pulled high and active low so if nothing
-// is connected it never reports rain. The value has been flakey so I've disabled for now.
-// TODO: Fix rain sensor readings.
-// Status is checked periodically (see Rotator.RainCheckInterval()) but only sent when
-// the status changes (hence the lastIsRaining).
+// Timer to periodically checks for rain and shutter ping.
 
 StopWatch Rainchecktimer;
+StopWatch PingTimer;
 
 bool bIsRaining = false;
 bool bShutterPresnt = false;
 #pragma endregion
 
 #pragma region command constants
-/* Shutter talks asyncronously so any immediate return shows the old
-// value since only the Setup form changes the settings and it has to close
-// to do so, that doesn't matter. Once the Setup dialog OK is received,
-// Grab all the settings from the Shutter and store in RemoteShutter so
-// next time the Setup form is loaded it has the new values.
-// Shutter is usually uppercase of rotator version.
-// Name order is weird just because auto-complete is easier this way.
-// had to use char because switch{} can't handle strings.
-//
-// All responses are preceeded by the command char and while it is needed by
-// the shutter, ASCOM talks synchronously and actually has to dispose of that
-// first character. Leaving it in for now since it's easier to read when just
-// using a serial terminal to talk to the rotator. Plus who knows what other
-// programs people might write that may use async comms.
-//
-// Originally tried to make the letters make sense but there are too many. May
-// just re-do to go in alphabetical order since I use the constant labels anyway.
-// TODO: Alphabetize the characters if I get motivated enough.
-// NOTE: Used labels because it's nearly impossible to remember all the character
-// meanings. Plus this lets me change the letters without changing code. Have
-// to make the same changes in the shutter and ASCOM but cut & paste makes that easy.
-*/
-const String DEBUG_STATE_CMD			= "%"; // Get/Set debugging messages 0=off
-const String WIRELESS_DEBUG_COMMENT		= "B"; // Handy debug messages sent to Shutter which can serial print. Used directly, not in case statements
+
+const char DEBUG_MSG_CMD			= '*'; // start of a debug message sent to the Shutter Arduino.
 const char ACCELERATION_ROTATOR_CMD		= 'e'; // Get/Set stepper acceleration
 const char ABORT_MOVE_CMD				= 'a'; // Tell everything to STOP!
 const char CALIBRATE_ROTATOR_CMD		= 'c'; // Calibrate the dome
@@ -138,6 +120,7 @@ const char STATE_SHUTTER_GET			= 'M'; // Get shutter state
 const char STEPSPER_SHUTTER_CMD			= 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET			= 'V'; // Get version string
 const char VOLTS_SHUTTER_CMD			= 'K'; // Get volts and get/set cutoff
+const char SHUTTER_PING					= 'L'; // use to reset watchdong timer.
 const char VOLTSCLOSE_SHUTTER_CMD			= 'B'; // Get/Set if shutter closes and rotator homes on shutter low voltage
 #pragma endregion
 
@@ -154,8 +137,8 @@ void setup()
 {
 	Computer.begin(9600);
 	Wireless.begin(9600);
-	// delay(25000);
 	Rainchecktimer.reset();
+	PingTimer.reset();
 	DBPrint("Ready");
 }
 
@@ -163,13 +146,13 @@ void loop()
 {
 
 	if (!XbeeStarted) {
-		if (!Rotator.radioIsConfigured && !isConfiguringWireless) {
+		if (!Rotator._radioIsConfigured && !isConfiguringWireless) {
 			DBPrint("Xbee reconfiguring");
 			StartWirelessConfig();
-			DBPrint("Rotator.radioIsConfigured : " + String(Rotator.radioIsConfigured));
+			DBPrint("Rotator._radioIsConfigured : " + String(Rotator._radioIsConfigured));
 			DBPrint("isConfiguringWireless : " + String(isConfiguringWireless));
 		}
-		else if (Rotator.radioIsConfigured) {
+		else if (Rotator._radioIsConfigured) {
 			XbeeStarted = true;
 			wirelessBuffer = "";
 			DBPrint("Radio configured");
@@ -179,6 +162,7 @@ void loop()
 
 	Rotator.Run();
 	CheckForCommands();
+	PingShutter();
 	CheckForRain();
 	if(gotHelloFromShutter) {
 		requestShutterData();
@@ -190,7 +174,6 @@ void loop()
 
 #pragma region Periodic and Helper functions
 
-//<SUMMARY>Start configuration routine then send Hello broadcast</SUMMARY>
 void StartWirelessConfig()
 {
 	Computer.println("Xbee configuration started");
@@ -206,8 +189,6 @@ void ConfigXBee(String result)
 	DBPrint("[ConfigXBee]");
 
 	if (configStep == 0) {
-		// ATString = "ATCE1,ID7734,AP0,SM0,RO0,WR,CN";
-		// CE1 for coordinator, rotation MY is 0,
 		ATString = "ATCE1,ID7734,CH0C,MY0,DH0,DLFFFF,AP0,SM0,BD3,WR,CN";
 		Wireless.println(ATString);
 		DBPrint("Sending : " + ATString);
@@ -216,7 +197,7 @@ void ConfigXBee(String result)
 
 	if (configStep > 9) {
 		isConfiguringWireless = false;
-		Rotator.radioIsConfigured = true;
+		Rotator._radioIsConfigured = true;
 		XbeeStarted = true;
 		Rotator.SaveToEEProm();
 		delay(10000);
@@ -313,32 +294,35 @@ void CheckForRain()
 	}
 }
 
-//<SUMMARY>Send debug comment to shutter</SUMMARY>
-//Handy when rotator is connected to something else so you
-//can't print to serial.
-// TODO: Get rid of this once ASCOM can handle debug comments
-void WirelessComment(String comment)
+
+void PingShutter()
 {
-	Wireless.print(WIRELESS_DEBUG_COMMENT + comment + "#");
+	if(PingTimer.elapsed() >= pingInterval) {
+		Wireless.print(String(SHUTTER_PING )+ "#");
+		ReceiveWireless();
+		PingTimer.reset();
+		}
 }
+
 #pragma endregion
 
 #pragma region Serial handling
-// All ASCOM comms are terminated with # but left if the \r\n for compatibility
+// All ASCOM comms are terminated with # but left if the \r\n for XBee config
 // with other programs.
 void ReceiveComputer()
 {
 	char computerCharacter = Computer.read();
-
-	if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
-		// End of message
-		if (computerBuffer.length() > 0) {
-			ProcessSerialCommand();
-			computerBuffer = "";
+	if (computerCharacter != ERR_NO_DATA) {
+		if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
+			// End of message
+			if (computerBuffer.length() > 0) {
+				ProcessSerialCommand();
+				computerBuffer = "";
+			}
 		}
-	}
-	else {
-		computerBuffer += String(computerCharacter);
+		else {
+			computerBuffer += String(computerCharacter);
+		}
 	}
 }
 
@@ -347,7 +331,7 @@ void ProcessSerialCommand()
 	float localFloat;
 	char command; //, localChar;
 	String value, wirelessMessage;
-	int localInt;
+	unsigned long localULong;
 	String serialMessage, localString;
 	bool hasValue = false; //, localBool = false;
 	long localLong;
@@ -359,7 +343,8 @@ void ProcessSerialCommand()
 	value = computerBuffer.substring(1);
 	// payload has data (better one comparison here than many in code. Even though
 	// it's still executed just once per loop.
-	if (value.length() > 0) hasValue = true;
+	if (value.length() > 0)
+		hasValue = true;
 
 	serialMessage = "";
 	wirelessMessage = "";
@@ -494,10 +479,8 @@ void ProcessSerialCommand()
 
 		case RAIN_ROTATOR_CMD:
 			if (hasValue) {
-				localInt = value.toInt();
-				if (localInt < 0)
-					localInt = 0;
-				Rotator.SetRainInterval(localInt);
+				localULong = (unsigned long)value.toInt();
+				Rotator.SetRainInterval(localULong);
 			}
 			serialMessage = String(RAIN_ROTATOR_CMD) + String(Rotator.GetRainCheckInterval());
 			break;
@@ -560,7 +543,7 @@ void ProcessSerialCommand()
 
 		case INIT_XBEE:
 			localString = String(INIT_XBEE);
-			Rotator.radioIsConfigured = false;
+			Rotator._radioIsConfigured = false;
 			isConfiguringWireless = false;
 			XbeeStarted = false;
 			configStep = 0;
@@ -732,6 +715,9 @@ void ProcessSerialCommand()
 			serialMessage = localString + RemoteShutter.watchdogInterval;
 			break;
 
+		case DEBUG_MSG_CMD:
+			break;
+
 	#pragma endregion
 
 		default:
@@ -766,7 +752,7 @@ int ReceiveWireless()
 		// read the response
 		do {
 			wirelessCharacter = Wireless.read();
-			if(wirelessCharacter != '\r' && wirelessCharacter != -1) {
+			if(wirelessCharacter != '\r' && wirelessCharacter != ERR_NO_DATA) {
 				wirelessBuffer += String(wirelessCharacter);
 			}
 		} while (wirelessCharacter != '\r');
@@ -789,7 +775,7 @@ int ReceiveWireless()
 	// read the response
 	do {
 		wirelessCharacter = Wireless.read();
-		if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter != '#' && wirelessCharacter != -1) {
+		if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter != '#') {
 			wirelessBuffer += String(wirelessCharacter);
 		}
 	} while (wirelessCharacter != '#');
@@ -802,7 +788,7 @@ int ReceiveWireless()
 
 void ProcessWireless()
 {
-	char command; // , localChar;
+	char command;
 	String value, wirelessMessage;
 
 	DBPrint("<<< Received: " + wirelessBuffer);
@@ -862,6 +848,10 @@ void ProcessWireless()
 
 		case WATCHDOG_INTERVAL_SET:
 			RemoteShutter.watchdogInterval = value;
+			break;
+
+		case SHUTTER_PING:
+			bShutterPresnt = true;
 			break;
 
 		default:
