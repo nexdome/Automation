@@ -1,7 +1,9 @@
 /*
-* PDM NexDome Rotation kit firmware. NOT compatible with original NexDome ASCOM driver.
+* NexDome Shutter kit firmware. NOT compatible with original NexDome ASCOM driver or Rotation kit firmware.
 *
 * Copyright (c) 2018 Patrick Meloy
+* Copyright (c) 2019 Rodolphe Pineau, Ron Crouch, NexDome
+*
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 *  files (the Software), to deal in the Software without restriction, including without limitation the rights to use, copy,
 *  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
@@ -16,6 +18,8 @@
 *  Inspired by the original official NexDome firmware by grozzie2 but completely incompatible.
 *  https://github.com/grozzie2/NexDome
 */
+
+
 #pragma once
 #include <EEPROM.h>
 #include <AccelStepper.h>
@@ -33,8 +37,13 @@
 #define STEP_TYPE 8
 
 // #define DEBUG
+// #define DEBUG_W
 #ifdef DEBUG
-#define DBPrint(x) Serial.println(x)
+#ifdef DEBUG_W
+#define DBPrint(x) Wireless.println(String(DEBUG_MSG_CMD) + x + String("#"))
+#else
+#define DBPrint(x) Computer.println(x)
+#endif // DEBUG_W
 #else
 #define DBPrint(x)
 #endif // DEBUG
@@ -48,7 +57,7 @@ typedef struct RotatorConfiguration {
 	float		homeAzimuth;
 	float		parkAzimuth;
 	int			cutoffVolts;
-	unsigned int	rainCheckInterval;
+	unsigned long	rainCheckInterval;
 	bool		rainCheckTwice;
 	byte		rainAction;
 	bool		radioIsConfigured;
@@ -73,7 +82,7 @@ AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
 
 #define VOLTAGE_MONITOR_PIN A0
 
-#define SIGNATURE				822 // convert to #define to save space
+#define SIGNATURE				2110 // convert to #define to save space
 #define EEPROM_LOCATION 	10
 #define STEPSFORROTATION	55100
 
@@ -89,7 +98,7 @@ public:
 
 	RotatorClass();
 
-	bool		radioIsConfigured = false;
+	bool		_radioIsConfigured = false;
 	// Getters
 	bool		GetRainStatus();
 	int			GetLowVoltageCutoff();
@@ -102,7 +111,7 @@ public:
 	long		GetAcceleration();
 	long		GetStepsPerRotation();
 	byte		GetRainAction();
-	unsigned int			GetRainCheckInterval();
+	unsigned long			GetRainCheckInterval();
 	bool		GetRainCheckTwice();
 	bool		GetReversed();
 	float		GetAzimuth();
@@ -120,7 +129,7 @@ public:
 	void		SetAzimuth(const float);
 	void		SetParkAzimuth(const float);
 	void		SetStepsPerRotation(const long);
-	void		SetRainInterval(const uint16_t);
+	void		SetRainInterval(const unsigned long);
 	void		SetReversed(const bool reversed);
 	void		SetHomeAzimuth(const float);
 	void		SetRainAction(const byte);
@@ -146,7 +155,7 @@ public:
 private:
 
 
-	unsigned int	_rainCheckInterval; // in seconds, function  multiplies by 1000
+	unsigned long	_rainCheckInterval; // in seconds, function  multiplies by 1000
 	bool		_rainCheckTwice;
 	byte		_rainAction;
 
@@ -191,8 +200,6 @@ private:
 	unsigned long nextPeriodicReadingLapse = 10;
 
 	// Utility
-	long		GetPositionalDistance(const long, const long);
-
 	StopWatch _buttonCheckTimer;
 	unsigned long nextCheckButtonLapse = 10;
 	void		ButtonCheck();
@@ -244,7 +251,7 @@ void RotatorClass::SaveToEEProm()
 	cfg.rainCheckInterval = _rainCheckInterval;
 	cfg.rainCheckTwice = _rainCheckTwice;
 	cfg.rainAction = _rainAction;
-	cfg.radioIsConfigured = radioIsConfigured;
+	cfg.radioIsConfigured = _radioIsConfigured;
 	EEPROM.put(EEPROM_LOCATION, cfg);
 
 }
@@ -274,7 +281,7 @@ bool RotatorClass::LoadFromEEProm()
 		_rainCheckInterval = cfg.rainCheckInterval;
 		_rainCheckTwice = cfg.rainCheckTwice;
 		_rainAction = cfg.rainAction;
-		radioIsConfigured = cfg.radioIsConfigured;
+		_radioIsConfigured = cfg.radioIsConfigured;
 	}
 
 	SetMaxSpeed(_maxSpeed);
@@ -296,7 +303,7 @@ void RotatorClass::SetDefaultConfig()
 	_rainCheckInterval = 30; // In seconds, function will x 10
 	_rainCheckTwice = false;
 	_rainAction = 0;
-	radioIsConfigured = false;
+	_radioIsConfigured = false;
 
 }
 
@@ -382,7 +389,7 @@ bool RotatorClass::GetRainStatus()
 	return isRaining;
 }
 
-inline void RotatorClass::SetRainInterval(const uint16_t interval)
+inline void RotatorClass::SetRainInterval(const unsigned long interval)
 {
 	_rainCheckInterval = interval;
 	SaveToEEProm();
@@ -463,7 +470,7 @@ inline byte RotatorClass::GetRainAction()
 	return _rainAction;
 }
 
-inline unsigned int RotatorClass::GetRainCheckInterval()
+inline unsigned long RotatorClass::GetRainCheckInterval()
 {
 	return _rainCheckInterval;
 }
@@ -699,24 +706,6 @@ float RotatorClass::GetAngularDistance(const float fromAngle, const float toAngl
 	return delta;
 }
 
-long RotatorClass::GetPositionalDistance(const long fromPosition, const long toPosition)
-{
-	long delta;
-
-	delta = toPosition - fromPosition;
-	if (delta == 0)
-		return 0; //  we are already there
-
-	if (delta > _stepsPerRotation / 2)
-		delta -= _stepsPerRotation;
-
-	if (delta < -_stepsPerRotation / 2)
-		delta += _stepsPerRotation;
-
-	delta = delta - int(delta) % STEP_TYPE;
-	return delta;
-
-}
 
 void RotatorClass::SetAzimuth(const float newHeading)
 {

@@ -5,8 +5,8 @@
 [Setup]
 AppID={{1a0efb71-12c6-4d27-999f-a51a70b812e6}
 AppName=ASCOM NexDome Dome Driver
-AppVerName=ASCOM NexDome Dome Driver 2.1
-AppVersion=2.1
+AppVerName=ASCOM NexDome Dome Driver 2.11
+AppVersion=2.11
 AppPublisher=NexDome <support@nexdome.com>
 AppPublisherURL=mailto:support@nexdome.com
 AppSupportURL=http://tech.groups.yahoo.com/group/ASCOM-Talk/
