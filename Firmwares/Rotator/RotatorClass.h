@@ -299,7 +299,7 @@ void RotatorClass::SetDefaultConfig()
 	_reversed = 0;
 	_homeAzimuth = 0;
 	_parkAzimuth = 0;
-	_cutOffVolts = 1220;
+	_cutOffVolts = 1150;
 	_rainCheckInterval = 30; // In seconds, function will x 10
 	_rainCheckTwice = false;
 	_rainAction = 0;
