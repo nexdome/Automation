@@ -170,7 +170,7 @@ private:
 	uint16_t		_volts;
 	StopWatch 	_batteryCheckTimer;
 	unsigned long		_batteryCheckInterval = 0; // we want to check battery immedialtelly
-	uint16_t		_cutoffVolts = 1220;
+	uint16_t		_cutoffVolts = 1150;
 	byte			_voltsClose = 0;
 
 	uint8_t			_lastButtonPressed;
@@ -261,7 +261,7 @@ void ShutterClass::DefaultEEProm()
 	_acceleration = 7000;
 	_maxSpeed = 5000;
 	_reversed = false;
-	_cutoffVolts = 1220;
+	_cutoffVolts = 1150;
 	_voltsClose = 0;
 	watchdogInterval = 90000;
 	radioIsConfigured = false;
