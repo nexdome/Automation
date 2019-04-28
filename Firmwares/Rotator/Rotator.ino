@@ -565,7 +565,7 @@ void ProcessSerialCommand()
 			else {
 				wirelessMessage = localString;
 			}
-			Wireless.print(localString+ "#");
+			Wireless.print(wirelessMessage + "#");
 			ReceiveWireless();
 			serialMessage = localString + RemoteShutter.acceleration;
 			break;
