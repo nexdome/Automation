@@ -37,7 +37,7 @@ String serialBuffer;
 #define Wireless Serial1
 String wirelessBuffer;
 
-const String version = "2.11";
+const String version = "2.12";
 
 #pragma endregion
 
@@ -106,6 +106,7 @@ void loop()
 			DBPrintln("Radio configured");
 		}
 	}
+/*
 
 	if(watchdogTimer.elapsed() >= Shutter.watchdogInterval) {
 			DBPrintln("watchdogTimer triggered.. closing");
@@ -116,6 +117,7 @@ void loop()
 			Shutter.Close();
 			}
 	}
+ */
 
 	Shutter.DoButtons();
 	Shutter.Run();
