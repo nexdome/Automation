@@ -39,7 +39,7 @@ RemoteShutterClass RemoteShutter;
 #define OK	0
 
 
-#define VERSION "2.11"
+#define VERSION "2.12"
 
 #define Computer Serial
 String computerBuffer;
